@@ -205,8 +205,7 @@ include("includes/header.php");
                                     <tr>
                                         <th># ID</th>
                                         <th>FullName</th>
-                                        <th>Email</th>
-                                        <th>Address</th>
+                                        <th>Event Status</th>
                                         <th>Registration Date</th>
                                     </tr>
                                 </thead>
@@ -221,9 +220,8 @@ include("includes/header.php");
                                         ?>
                                             <tr>
                                                 <td><?php echo $count++;  ?></td>
-                                                <td><?php echo ucwords($event_invite_fullname) ?></td>
-                                                <td><?php echo $event_invite_email ?></td>
-                                                <td><span style="white-space:initial;"><?php echo $event_invite_address ?></span></td>
+                                                <td><?php echo ucwords($clients_title . " " . $clients_fullname) ?></td>
+                                                <td><span class="badge badge-info"><?php echo $event_invite_status ?></span></td>
                                                 <td><?php echo date("D, d M Y", strtotime($event_invite_created_on)); ?></td>
                                             </tr>
 

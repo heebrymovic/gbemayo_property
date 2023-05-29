@@ -11,6 +11,9 @@
             <div class="container">
                 <div class="row clearfix">
                     <div class="col-lg-6 col-md-12">
+                        <h1 class="mt-1">
+                            <strong class="text text-secondary">You are logged in as <?php echo ucwords(get_privileges_name($session_logged_company_privilege_id)) ?></strong>
+                        </h1>
                         <ul class="breadcrumb pl-0 pb-0 ">
                           <!--   <li class="breadcrumb-item"><a href="#">Home</a></li> -->
                             <li class="breadcrumb-item active"> Dashboard</li>

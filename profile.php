@@ -25,7 +25,7 @@
 
             include("update-profile.php");
 
-        }else if (move_uploaded_file($tmpname, $uploadpath)) {
+        }else if ( move_uploaded_file($tmpname, $uploadpath) ) {
             unlink($old_path);
 
           include("update-profile.php");

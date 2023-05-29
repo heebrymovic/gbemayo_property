@@ -48,25 +48,14 @@ include("includes/header.php");
                         <div role="tabpanel" class="tab-pane active" id="overview">
                            
                             <div class="row clearfix">
-                                <div class="col-lg-5 col-md-12">
+                                <div class="col-lg-4 col-md-12">
                                     <div class="card">
                                         <div class="header">
                                             <h2><strong>Info</strong></h2>
                                         </div>
                                         <div class="body pt-1">
-                                            <small class="text-muted">FullName: </small>
-                                            <p><?php echo ucwords($fetch_all_clients['buyers_title'] . ". " .$fetch_all_clients['buyers_fullname']) ?></p>
-                                            <hr>
-                                            <small class="text-muted">Email address: </small>
-                                            <p><?php echo $fetch_all_clients['buyers_email'] ?></p>
-                                            <hr>
-                                             <small class="text-muted">Phone Number: </small>
-                                            <p><?php echo ucwords($fetch_all_clients['buyers_phone_number']) ?></p>
-                                            <hr>
-                                            <small class="text-muted">Address: </small>
-                                            <p><?php echo $fetch_all_clients['buyers_address'] ?></p>
                                             <div>
-                                               <img src="../<?php echo $fetch_all_clients['buyers_passport'] ?>" alt="Agent Image" style="border:0; width: 100%; max-height: 250px; object-fit: cover;">
+                                               <img src="../clients/<?php echo $fetch_all_clients['clients_photo'] ?>" alt="Clients Image" style="border:0; width: 100%; max-height: 250px; object-fit: cover;">
                                             </div>
                                             <hr>
                                             <small class="text-muted">Property Name: </small>
@@ -78,41 +67,100 @@ include("includes/header.php");
                                             <small class="text-muted">Agent Payment Structure:</small>
                                             <p><?php echo $fetch_all_clients['property_buy_payment_structure'] ? "N".number_format($fetch_all_clients['installmental_property_amount'])." For " . $fetch_all_clients['installmental_property_duration']: "Full Payment" ?></p>
                                             <hr>
-                                            <small class="text-muted">Client Payment Price:</small>
-                                            <p>N<?php echo number_format($fetch_all_clients['property_buy_amount_paid']) ?></p>
+                                            <small class="text-muted">FullName: </small>
+                                            <p><?php echo ucwords($fetch_all_clients['clients_id'] . $fetch_all_clients['clients_title'] . ". " .$fetch_all_clients['clients_fullname']) ?></p>
                                             <hr>
-                                             <small class="text-muted">Payment Status:</small>
-                                             <p>
-                                                <span class="badge <?php echo $fetch_all_clients['property_buy_status'] == 'pending' ? 'badge-warning text-white': ($fetch_all_clients['property_buy_status'] == 'approved' ? 'badge-success' : 'badge-danger') ?>"><?php echo $fetch_all_clients['property_buy_status'] ?></span>
-                                            </p>
+                                            <small class="text-muted">Email address: </small>
+                                            <p><?php echo $fetch_all_clients['clients_email'] ?></p>
+                                            <hr>
+                                             <small class="text-muted">Phone Number: </small>
+                                            <p><?php echo ucwords($fetch_all_clients['clients_phone_number']) ?></p>
+                                            <hr>
+                                            <small class="text-muted">Address: </small>
+                                            <p><?php echo $fetch_all_clients['clients_address'] ?></p>
+                                            <hr>
+
+                                                                                        
+                                             
                                         </div>
                                     </div>
                                 </div>
 
-                                <?php
-                                    if ($session_logged_company_privilege_id == 1) {
-                                ?>
+                             
+                                <div class="col-lg-8 col-md-12">
+                                     <div class="card p-3" >
+                                            <h5>Purchased Property Payment</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-borderless table-hover mb-0 js-basic-example dataTable" id="datatables">
+                                                    <thead>
+                                                        <tr>
+                                                            <th># ID</th>
+                                                            <th>Paid Amount Price</th>
+                                                            <th>Payment Proof</th>
+                                                            <th>Payment Status</th>
+                                                            <th>Payment Date</th>
+                                                             <?php
+                                                                if ($session_logged_company_privilege_id == 1){
+                                                             ?>
+                                                                <th>Action</th>
 
-                                    <div class="col-lg-7 col-md-12">
-                                        <div class="card">
-                                            <div class="body">
-                                                <h5>Payment Proof</h5>
-                                                <img src="../<?php echo $fetch_all_clients['property_buy_payment_proof']; ?>" onclick=" openFullscreen(this)" style="width: 100%;max-height: 400px; object-fit:cover; cursor: zoom-in;">
-                                            </div>
-                                        </div>
+                                                            <?php
+                                                                }
+                                                            ?>
 
-                                        <div class="card">
-                                            <div class="body">
-                                                <h5>Valid ID</h5>
-                                                <img src="../<?php echo $fetch_all_clients['buyers_valid_id']; ?>" onclick=" openFullscreen(this)" style="width: 100%;max-height: 400px; object-fit:cover; cursor: zoom-in;">
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+
+                                                            $query_payments = query_property_payments($fetch_all_clients['clients_id'], $purchase_id, true);
+                                                            $count =  1;
+                                                            while($fetch_payments = mysqli_fetch_assoc($query_payments)){
+                                                                extract($fetch_payments);
+                                                            ?>
+                                                                <tr>
+                                                                    <td><?php echo $count++ ?></td>
+                                                                    <td>N<?php echo number_format($property_buy_amount_paid) ?></td>
+                                                                    <td><img onclick="openFullscreen(this)" style="width: 300px;" src="../clients/<?php echo $property_buy_payment_proof ?>"></td>
+                                                                    <td>
+                                                                        <span class="badge <?php echo $property_payment_status == 'pending' ? 'badge-warning text-white': ($property_payment_status == 'approved' ? 'badge-success' : 'badge-danger') ?>"><?php echo $property_payment_status ?></span>
+                                                                    </td>
+                                                                    <td><?php echo date( "D, d M Y" , strtotime($property_buy_payment_created_on)) ?></td>
+                                                                     <?php
+                                                                        if ($session_logged_company_privilege_id == 1 && $property_payment_status == 'pending'){
+                                                                    ?>
+                                                                    <td>
+                                                                   
+                                                                        <a class="btn btn-info text-white btn-sm" href="approve-purchase?property_id=<?php echo base64_encode($property_id) ?>&property_payment_id=<?php echo base64_encode($property_buy_payment_id) ?>&client_id=<?php echo base64_encode($fetch_all_clients['clients_id']) ?>">Approve</a>
+                                                                       
+                                                                        <a class="btn btn-warning btn-sm" href="decline-purchase?property_id=<?php echo base64_encode($property_id) ?>&property_payment_id=<?php echo base64_encode($property_buy_payment_id) ?>&client_id=<?php echo base64_encode($fetch_all_clients['clients_id']) ?>">Decline</a>
+                                                                    
+                                                                    </td>
+
+                                                                    <?php
+                                                                        }else if($session_logged_company_privilege_id == 1){
+                                                                    ?>
+                                                                    <td>
+                                                                        <button class="btn btn-info text-white"><?php echo ucwords($property_payment_status) ?></button>
+                                                                    </td>
+                                                                    <?php
+                                                                        }
+                                                                    ?>
+                                                                   
+
+                                                                </tr>
+
+                                                            <?php
+
+                                                            }
+
+                                                        ?>
+                                                    </tbody>
+
+                                                </table>
                                             </div>
-                                        </div>
                                     </div>
-                                <?php
-                                    }
-
-                                ?>
-                                
+                                </div>                                
                             </div>
                         </div>
 

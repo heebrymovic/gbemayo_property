@@ -103,6 +103,8 @@
 
                                 echo $output;
                             }
+
+                            /*print_r($_SESSION);*/
                         ?>
                         <form class="form mt-2" action="" method="POST">
                             <div class="form-group mb-1">

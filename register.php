@@ -2,13 +2,27 @@
     
     include("includes/plugins.php");
 
+    if (isset($_SESSION['store']) && !empty($_SESSION['store']) && !isset($_SESSION['store']['status']) ) {
+
+        echo "<script>
+            alert('You still have a pending payment');
+            window.location='confirm-pay'
+        </script>";
+
+    
+    }else if(isset($_SESSION['store']['status']) && $_SESSION['store']['status'] == 'pending') {
+        echo "<script>
+            alert('You still have a pending transaction. Kindly wait while we verify.');
+            window.location='verify'
+        </script>";
+    }
+
 
     if (isset($_GET['refid'])) {
                 
         $check_referral = query_agent_referral($_GET['refid']);
 
         if ($check_referral > 0) {
-
             $query_referral = query_agent_referral($_GET['refid'], true);
             $fetch_referral = mysqli_fetch_assoc($query_referral);
         }
@@ -24,7 +38,6 @@
         $address = mysqli_real_escape_string($con, addslashes($_POST['address']));
         $password = mysqli_real_escape_string($con, addslashes($_POST['password']));
         $password = md5($password);
-
 
         $tmpname = $_FILES['file']['tmp_name'];
         $filename = $_FILES['file']['name'];
@@ -43,7 +56,8 @@
 
         }else if (move_uploaded_file($tmpname, $uploadpath)) {
                 
-                if(@$fetch_referral  && (count($fetch_referral) == 2) ){
+                /*CHECKS IF IT REALTOR REFERRAL*/
+                if(@$fetch_referral  && $fetch_referral['priv_id'] == 3) {
 
                     $business_id = $fetch_referral['company_id'];
 
@@ -51,7 +65,8 @@
 
                     $referral_type = "realtor";
 
-                }else if (@$fetch_referral  && (count($fetch_referral) == 1)) {
+                    /*CHECKS IF IT BUSINESS REFERRAL*/
+                }else if (@$fetch_referral  && $fetch_referral['priv_id'] == 2) {
                     
                      $business_id = $fetch_referral['company_id'];
 
@@ -64,19 +79,54 @@
                         $referral_type = "business";
                 }
 
-                $register_agent = agent_registration($agent_privilege_id, $fullname, $email, $password, $phone_no, $address,$uploadpath ,$business_id,  $referral_id, $agent_referred_by_id, $referral_type,$event_id,);
 
+                if ( ($agent_privilege_id == 3 && !@$fetch_referral) ||  ($agent_privilege_id == 3 && @$fetch_referral && $fetch_referral['subcription'] == 'active') ) {
+                    
+                    $_SESSION['store']['agent_privilege_id'] = $agent_privilege_id;
+                    $_SESSION['store']['fullname'] = $fullname;
+                    $_SESSION['store']['email'] = $email;
+                    $_SESSION['store']['password'] = $password;
+                    $_SESSION['store']['phone_no'] = $phone_no;
+                    $_SESSION['store']['address'] = $address;
+                    $_SESSION['store']['uploadpath'] = $uploadpath;
+                    $_SESSION['store']['business_id'] = $business_id;
+                    $_SESSION['store']['referral_id'] = $referral_id;
+                    $_SESSION['store']['agent_referred_by_id'] = $agent_referred_by_id;
+                    $_SESSION['store']['referral_type'] = $referral_type;
+                    $_SESSION['store']['event_id'] = $event_id;
+                    $_SESSION['store']['payment_type'] = "register";
 
-                if ($register_agent) {
-                    $output = "<div class='alert alert-success'>
-                              Registration Successful. Login to your dashboard
+                    echo "<script>
+                    alert('Proceed to payment page');
+                    window.location.href='confirm-pay'
+                    </script>";
+                    exit();
+                } else if (@$fetch_referral && $fetch_referral['subcription'] == 'inactive' ) {
+                    
+                    $output = "<div class='alert alert-danger'>
+                                  This account can't recruit at the moment. Try again later
                             </div>";
+
+                        unlink($uploadpath);
+
                 }else{
-                     $output = "<div class='alert alert-danger'>
-                              Registration Failed. Try again later
-                            </div>";
+
+                         $register_agent = agent_registration($agent_privilege_id, $fullname, $email, $password, $phone_no, $address,$uploadpath ,$business_id,  $referral_id, $agent_referred_by_id, $referral_type,$event_id);    
+                        
+                
+
+                            if ($register_agent) {
+                                $output = "<div class='alert alert-success'>
+                                          Registration Successful. Login to your dashboard
+                                        </div>";
+                            }else{
+                                 $output = "<div class='alert alert-danger'>
+                                          Registration Failed. Try again later
+                                        </div>";
+                                         unlink($uploadpath);
+                            }
+
                 }
-             
         }
 
     }
@@ -97,13 +147,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
 
-<title>:: Amaze :: Sign Up</title>
+<title>:: Gbemayo :: Sign Up</title>
 <!-- Favicon-->
 <link rel="icon" href="favicon.ico" type="image/x-icon">
 <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
-
+<link rel="stylesheet" type="text/css" href="assets/plugins/sweetalert/sweetalert.css">
 <!-- Custom Css -->
 <link rel="stylesheet" href="assets/css/amaze.style.min.css">
+
 </head>
 
 <body class="font-ubuntu">
@@ -115,7 +166,7 @@
             <div class="row clearfix">
                 <div class="col-lg-6 col-md-12">
                     <div class="company_detail">
-                        <h4 class="logo"><img class="mr-2" src="assets/images/logo.svg" alt="Logo"> Gbemayo</h4>
+                        <h4 class="logo"><img class="mr-2" src="assets/images/logo.svg" alt="Logo">Gbemayo</h4>
                         <h3>The ultimate <strong>Gbemayo</strong> Properties and Investments</h3>
                         <p>Amaze is fully based on HTML5 + CSS3 Standards. Is fully responsive and clean on every device and every browser</p>
                         <div class="footer">
@@ -177,7 +228,7 @@
                                         <option value="">Select Agent Type</option>
                                         <?php
 
-                                             if(@$fetch_referral  && (count($fetch_referral) == 2) ){
+                                             if(@$fetch_referral  && $fetch_referral['priv_id'] == 3 ){
                                         ?>
                                             <option value="4">Marketer</option>
                                         <?php
@@ -242,6 +293,8 @@
         window.history.replaceState( null, null, window.location.href );
     }
 </script>
+
+<script src="assets/plugins/sweetalert/sweetalert.min.js"></script>
 
 <!-- Jquery Core Js -->
 <script src="assets/bundles/libscripts.bundle.js"></script>

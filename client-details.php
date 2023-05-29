@@ -3,22 +3,13 @@ include("includes/header.php");
 
 
 
-    if (isset($_GET['business-id']) && !empty($_GET['business-id']) && isset($_GET['agent-id']) && !empty($_GET['agent-id']) && isset($_GET['purchase-id']) && !empty($_GET['purchase-id']) ) {
+    if (isset($_GET['client_id']) && !empty($_GET['client_id']) ) {
         
+        $client_id = base64_decode($_GET['client_id']);
 
-        $business_id = base64_decode($_GET['business-id']);
+        $query_client_info = query_clients($session_logged_in_agent_id, $session_logged_in_business_id, $client_id, true);
 
-        $agent_id = base64_decode($_GET['agent-id']);
-
-        $purchase_id = base64_decode($_GET['purchase-id']);
-
-        /*$query_agent_info = admin_query_agent($business_id, $agent_id, true);*/
-
-        $fetch_agent_info = mysqli_fetch_assoc($query_agent_info);
-
-        $query_all_clients = agent_buyers_property_purchase($agent_id, $business_id, $purchase_id ,true);
-
-        $fetch_all_clients = mysqli_fetch_assoc($query_all_clients);
+        $fetch_client_info = mysqli_fetch_assoc($query_client_info);
 
 
     }else{
@@ -109,50 +100,75 @@ include("includes/header.php");
 
                             </div> -->
                             <div class="row clearfix">
-                                <div class="col-lg-6 col-md-12">
+                                <div class="col-lg-4 col-md-12">
                                     <div class="card">
                                         <div class="header">
-                                            <h2><strong>Info</strong></h2>
+                                            <h2><strong>Clients Info</strong></h2>
                                         </div>
                                         <div class="body pt-1">
-                                            <small class="text-muted">FullName: </small>
-                                            <p><?php echo ucwords($fetch_all_clients['buyers_title'] . ". " .$fetch_all_clients['buyers_fullname']) ?></p>
+                                            <div class="mb-3">
+                                               <img src="clients/<?php echo $fetch_client_info['clients_photo'] ?>" alt="Clients Image" style="border:0; width: 100%; max-height: 250px; object-fit: cover;">
+                                            </div>
+                                            <small class="text-muted ">FullName: </small>
+                                            <p><?php echo ucwords($fetch_client_info['clients_title'] . " " .$fetch_client_info['clients_fullname']) ?></p>
                                             <hr>
                                             <small class="text-muted">Email address: </small>
-                                            <p><?php echo $fetch_all_clients['buyers_email'] ?></p>
+                                            <p><?php echo $fetch_client_info['clients_email'] ?></p>
                                             <hr>
                                              <small class="text-muted">Phone Number: </small>
-                                            <p><?php echo ucwords($fetch_all_clients['buyers_phone_number']) ?></p>
+                                            <p><?php echo ucwords($fetch_client_info['clients_phone_number']) ?></p>
                                             <hr>
                                             <small class="text-muted">Address: </small>
-                                            <p><?php echo $fetch_all_clients['buyers_address'] ?></p>
-                                            <div>
-                                               <img src="<?php echo $fetch_all_clients['buyers_passport'] ?>" alt="Agent Image" style="border:0; width: 100%; max-height: 250px; object-fit: cover;">
-                                            </div>
+                                            <p><?php echo $fetch_client_info['clients_address'] ?></p>  
                                             <hr>
-                                            <small class="text-muted">Property Name: </small>
-                                            <p><?php echo $fetch_all_clients['property_name'] ?></p>
-                                            <hr>
-                                            <small class="text-muted">Asking Price: </small>
-                                            <p>N<?php echo number_format($fetch_all_clients['property_price']); ?></p>
-                                            <hr>
-                                            <small class="text-muted">Agent Payment Structure:</small>
-                                            <p><?php echo $fetch_all_clients['property_buy_payment_structure'] ? "N".number_format($fetch_all_clients['installmental_property_amount'])." For " . $fetch_all_clients['installmental_property_duration']: "Full Payment" ?></p>
-                                            <hr>
-                                            <small class="text-muted">Client Payment Price:</small>
-                                            <p>N<?php echo number_format($fetch_all_clients['property_buy_amount_paid']) ?></p>
-                                            <hr>
-                                             <small class="text-muted">Payment Status:</small>
-                                             <p>
-                                                <span class="badge <?php echo $fetch_all_clients['property_buy_status'] == 'pending' ? 'badge-warning text-white': ($fetch_all_clients['property_buy_status'] == 'approved' ? 'badge-success' : 'badge-danger') ?>"><?php echo $fetch_all_clients['property_buy_status'] ?></span>
-                                            </p>
+                                                
                                         </div>
                                     </div>
                                   
                                 </div>
                                 <div class="col-lg-8 col-md-12">
-                          
-                                </div>
+                                    <div class="card p-3" >
+                                            <h5>Lists Of Purchased Property</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-borderless table-hover mb-0 js-basic-example dataTable" id="datatables">
+                                                   <thead>
+                                                    <tr>
+                                                        <th># ID</th>
+                                                        <th>Property Name</th>
+                                                        <th>Property Price</th>
+                                                        <th>Payment Type</th>
+                                                        <th>Purchase Date</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                        $query_all_purchase = query_all_clients_property_purchase($client_id, true);
+                                                        $count = 1;
+                                                        while($fetch_all_purchase = mysqli_fetch_assoc($query_all_purchase) ){
+                                
+                                                        extract($fetch_all_purchase);
+
+                                                    ?>
+                                                        <tr>
+                                                            <td><?php echo $count++; ?></td>
+                                                            <td><?php echo $property_name;?></td>
+                                                            <td>N<?php echo number_format($property_price);?></td>
+                                                            <td><?php echo $installmental_property_duration ? $installmental_property_duration : "Full Payment" ?></td>
+                                                            <td><?php echo date('D, d m Y ' , strtotime($property_buy_created_on)); ?></td>
+                                                            <td><a class="btn btn-primary btn-sm" href="purchase-details?purchase-id=<?php echo base64_encode($property_buy_id) ?>">View More</a> </td>
+
+                                                        </tr>
+                                                    <?php
+                                                            }
+
+                                                    ?>
+                                                </tbody>
+
+
+                                                </table>
+                                            </div>
+                                    </div>
                             </div>
                         </div>
 

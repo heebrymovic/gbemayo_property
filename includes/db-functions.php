@@ -30,6 +30,20 @@
     	}
 	}
 
+	function authenticate_client_login(){
+
+			$GLOBALS['session_logged_in_client_id']  = $client_id = @$_SESSION['client_id'];
+			$GLOBALS['session_logged_in_business_id'] = $client_business_id = @$_SESSION['client_business_id'];
+			$GLOBALS['session_logged_in_agent_id'] = $client_agent_id = @$_SESSION['client_agent_id'];
+			$GLOBALS['session_logged_in_privilege_id'] = $client_privilege_id = @$_SESSION['client_privilege_id'];
+		
+		if ( !isset($client_id) && !isset($client_business_id) && !isset($client_agent_id) && !isset($client_privilege_id) || ( admin_query_client($client_id,$client_business_id, $client_agent_id) == 0) ){
+
+       			 header("location:login");
+       			 exit();
+    	}
+	}
+
 
 	function superadmin_route(){
 		global $session_logged_company_privilege_id;
@@ -166,6 +180,17 @@
 		return $fetch['privileges_id'];
 	}
 
+
+
+	function get_privileges_name($privileges_id){
+		global $con;
+		
+		$query = mysqli_query($con, "SELECT privileges_name FROM privileges WHERE privileges_id='$privileges_id' ") or die(mysqli_error($con));
+
+		$fetch =  mysqli_fetch_array($query);
+		
+		return $fetch['privileges_name'];
+	}
 	
 
 
@@ -482,7 +507,7 @@
 	}
 
 
-	function agent_registration($agent_privilege_id, $agent_fullname, $agent_email, $agent_password, $agent_phone_number, $agent_address,$agent_profile_photo ,$agent_business_id,  $agent_referral_id, $agent_referred_by_id, $agent_referral_type,$agent_event_id){
+	function agent_registration($agent_privilege_id, $agent_fullname, $agent_email, $agent_password, $agent_phone_number, $agent_address,$agent_profile_photo ,$agent_business_id,  $agent_referral_id, $agent_referred_by_id, $agent_referral_type,$agent_event_id, $agent_payment_status = 'inactive'){
 		global $con;
 		
 		$query = mysqli_query($con, "INSERT INTO agents SET
@@ -498,6 +523,7 @@
 			agent_referral_type = '$agent_referral_type',
 			agent_referred_by_id = '$agent_referred_by_id',
 			agent_event_id = '$agent_event_id',
+			agent_payment_status = '$agent_payment_status',
 			agent_created_on = NOW()
 		")or die(mysqli_error($con));	
 
@@ -528,10 +554,10 @@
 	function query_agent_referral($referral_id, $data = false){
 		global $con;
 
-		$query = mysqli_query($con, "SELECT company_id FROM company WHERE company_referral_id='$referral_id' ");
+		$query = mysqli_query($con, "SELECT company_id, company_privilege_id as priv_id, company_subscription_status as subcription  FROM company WHERE company_referral_id='$referral_id' ");
 
 		if (mysqli_num_rows($query) == 0) {
-			$query = mysqli_query($con, "SELECT agents.agent_id, company.company_id  FROM agents JOIN company ON agents.agent_business_id = company.company_id WHERE agent_privilege_id = 3 AND agent_referral_id='$referral_id' ") or die(mysqli_error($con));
+			$query = mysqli_query($con, "SELECT agents.agent_id, company.company_id, agents.agent_privilege_id as priv_id, company_subscription_status as subcription  FROM agents JOIN company ON agents.agent_business_id = company.company_id WHERE agent_privilege_id = 3 AND agent_referral_id='$referral_id' ") or die(mysqli_error($con));
 		}
 
 		return $data ? $query : mysqli_num_rows($query);
@@ -551,13 +577,16 @@
 	}
 
 
-	function query_property_referral($referral_id, $data = false){
+	function query_client_referral($business_id, $agent_id, $data = false){
 		global $con;
 
-		$query = mysqli_query($con, "SELECT company_id, company_name fullname FROM company WHERE company_referral_id='$referral_id' ");
+		if (!$agent_id) {
+			
+			$query = mysqli_query($con, "SELECT company_name fullname FROM company WHERE company_id='$business_id' ");
 
-		if (mysqli_num_rows($query) == 0) {
-			$query = mysqli_query($con, "SELECT agents.agent_id, agents.agent_fullname fullname, company.company_id  FROM agents JOIN company ON agents.agent_business_id = company.company_id WHERE agent_referral_id='$referral_id' ") or die(mysqli_error($con));
+		}else if ($business_id && $agent_id){
+
+			$query = mysqli_query($con, "SELECT agents.agent_fullname fullname  FROM agents WHERE agent_business_id='$business_id' AND agent_id='$agent_id' ") or die(mysqli_error($con));
 		}
 
 		return $data ? $query : mysqli_num_rows($query);
@@ -569,6 +598,16 @@
 		global $con;
 
 		$query = mysqli_query($con, "SELECT * FROM agents JOIN privileges ON privileges.privileges_id = agents.agent_privilege_id WHERE agent_business_id ='$business_id' AND agent_referred_by_id ='' ORDER BY agent_id DESC");
+
+		return $data ? $query : mysqli_num_rows($query);
+
+	}	
+
+
+	function admin_query_business_clients($business_id , $data = false){
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM clients LEFT JOIN agents ON agents.agent_id = clients.clients_agent_id LEFT JOIN company ON company.company_id = clients.clients_business_id WHERE clients_business_id ='$business_id' ORDER BY clients_id DESC");
 
 		return $data ? $query : mysqli_num_rows($query);
 
@@ -594,6 +633,14 @@
 		return $data ? $query : mysqli_num_rows($query);
 	}	
 
+	function admin_query_client($client_id,$business_id, $agent_id, $data = false){ 
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM clients WHERE clients_business_id ='$business_id' AND clients_agent_id ='$agent_id' AND clients_id='$client_id' ");
+
+		return $data ? $query : mysqli_num_rows($query);
+	}	
+
 
 	function query_realtor_referral($business_id, $realtor_id, $data = false){ 
 		global $con;
@@ -614,6 +661,16 @@
 
 	}
 
+	function client_login($email, $password, $data = false){
+		
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM clients WHERE clients_email='$email' AND clients_password='$password'");
+
+		return $data ? $query : mysqli_num_rows($query);
+
+	}
+
 
 	function update_agent_password($agent_id,$business_id, $password){
 		global $con;
@@ -624,20 +681,28 @@
 		return $query;
 		
 	}
+
+
+	function update_client_password($agent_id,$business_id, $client_id ,$password){
+		global $con;
+
+		$query = mysqli_query($con, "UPDATE clients SET
+			clients_password = '$password' WHERE clients_agent_id='$agent_id' AND clients_business_id='$business_id' AND clients_id = '$client_id'  ");
+
+		return $query;
+		
+	}
 	
 
-	function event_reg($event_id, $event_invite_agent_id, $event_invite_business_id, $event_invite_fullname, $event_invite_email, $event_invite_phone_no, $event_invite_gender, $event_invite_address ){
+	function event_reg($event_id, $event_client_id, $event_invite_agent_id, $event_invite_business_id, $event_invite_status){
 		global $con;
 
 		$query = mysqli_query($con, "INSERT INTO event_invite SET
 			event_id='$event_id',
+			event_client_id = '$event_client_id',
 			event_invite_agent_id = '$event_invite_agent_id',
 			event_invite_business_id = '$event_invite_business_id',
-			event_invite_fullname = '$event_invite_fullname',
-			event_invite_email = '$event_invite_email',
-			event_invite_phone_no = '$event_invite_phone_no',
-			event_invite_gender = '$event_invite_gender',
-			event_invite_address = '$event_invite_address',
+			event_invite_status = '$event_invite_status',
 			event_invite_created_on = NOW()
 		") or die(mysqli_error($con));
 
@@ -645,22 +710,21 @@
 	}
 
 
-	function query_event_invitee_exists($email){
+	function query_client_event($event_id, $event_client_id, $data = false){
 		global $con; 
 
-		$query = mysqli_query($con, "SELECT event_invite_email FROM event_invite WHERE event_invite_email ='$email' ")  or die(mysqli_error($con));
+		$query = mysqli_query($con, "SELECT * FROM event_invite WHERE event_id ='$event_id' AND event_client_id ='$event_client_id' ")  or die(mysqli_error($con));
 
-		return mysqli_num_rows($query);
+		return $data ? $query : mysqli_num_rows($query);
 	}
 
 	function agent_event_invitee($event_invite_agent_id, $event_invite_business_id, $event_id, $data = false){
 		global $con;
 
-		$query = mysqli_query($con, "SELECT * FROM event_invite WHERE event_invite_agent_id ='$event_invite_agent_id' AND event_invite_business_id='$event_invite_business_id' AND event_id = '$event_id' ORDER BY 	event_invite_id DESC ");
+		$query = mysqli_query($con, "SELECT * FROM event_invite JOIN clients ON clients.clients_id = event_invite.event_client_id  WHERE event_invite_agent_id ='$event_invite_agent_id' AND event_invite_business_id='$event_invite_business_id' AND event_id = '$event_id' ORDER BY 	event_invite_id DESC ");
 
 		return $data ? $query : mysqli_num_rows($query);
 	}
-
 
 
 	function business_query_event_reg($business_id, $event_id, $data = false){
@@ -680,59 +744,96 @@
 		return $data ? $query : mysqli_num_rows($query);
 	}
 
-	function register_property_purchase($property_buy_agent_id, $property_buy_property_id, $property_buy_business_id,  $buyers_title, $buyers_fullname, $buyers_email,$buyers_phone_number, $buyers_occupation,  $buyers_address, $buyers_dob, $buyers_passport, $buyers_valid_id, $buyers_kin_fullname, $buyers_kin_address, $buyers_kin_relationship, $buyers_kin_phone_number, $property_buy_unit,  $property_buy_payment_structure, $property_buy_amount_paid,  $property_buy_payment_proof ){
+	function register_property_purchase($property_buy_agent_id, $property_buy_client_id, $property_id, $property_buy_business_id, $property_buy_unit,  $property_buy_payment_structure, $property_buy_amount_paid,  $property_buy_payment_proof ){
 		global $con;
 
 		$query = mysqli_query($con, "INSERT INTO property_buy SET
 			property_buy_agent_id = '$property_buy_agent_id',
-			property_buy_property_id = '$property_buy_property_id',
+			property_buy_client_id = '$property_buy_client_id',
+			property_id = '$property_id',
 			property_buy_business_id = '$property_buy_business_id',
-			buyers_title = '$buyers_title',
-			buyers_fullname = '$buyers_fullname',
-			buyers_email = '$buyers_email',
-			buyers_phone_number = '$buyers_phone_number',
-			buyers_occupation = '$buyers_occupation',
-			buyers_address = '$buyers_address',
-			buyers_dob = '$buyers_dob',
-			buyers_passport = '$buyers_passport',
-			buyers_valid_id = '$buyers_valid_id',
-			buyers_kin_fullname = '$buyers_kin_fullname',
-			buyers_kin_address = '$buyers_kin_address',
-			buyers_kin_relationship = '$buyers_kin_relationship',
-			buyers_kin_phone_number = '$buyers_kin_phone_number',
 			property_buy_unit = '$property_buy_unit',
 			property_buy_payment_structure = '$property_buy_payment_structure',
+			property_buy_created_on = NOW()
+		") or die(mysqli_error($con));
+
+		if ($query) {
+			
+			$property_buy_id = mysqli_insert_id($con);
+
+			return register_property_buy_payment($property_buy_id, $property_id, $property_buy_client_id, $property_buy_amount_paid, $property_buy_payment_proof );
+		}
+
+	}
+
+
+	function register_property_buy_payment($property_buy_id, $property_id ,$client_id, $property_buy_amount_paid, $property_buy_payment_proof ){
+		global $con;
+
+		$query = mysqli_query($con, "INSERT INTO property_buy_payment SET
+			property_buy_id = '$property_buy_id',
+			property_id = '$property_id',
+			client_id = '$client_id',
 			property_buy_amount_paid = '$property_buy_amount_paid',
 			property_buy_payment_proof = '$property_buy_payment_proof',
-			property_buy_created_on = NOW()
+			property_buy_payment_created_on = NOW()
 		") or die(mysqli_error($con));
 
 		return $query;
 	}
+	
 
 
+	function query_clients($agent_id, $business_id, $client_id = NULL, $data = false){
+		
+		global $con;
 
-	function agent_buyers_property_purchase($agent_id, $business_id, $property_buy_id = NULL, $data=false){
+		if ($client_id) {
+				$query = mysqli_query($con, "SELECT * FROM clients WHERE clients_agent_id='$agent_id' AND clients_business_id='$business_id' AND clients_id='$client_id' ") or die(mysqli_error($con));
+
+		}else{
+			$query = mysqli_query($con, "SELECT * FROM clients WHERE clients_agent_id='$agent_id' AND clients_business_id='$business_id' ") or die(mysqli_error($con));	
+		}
+		
+
+		return $data ? $query : mysqli_num_rows($query);
+
+	}
+
+
+	/*function agent_buyers_property_purchase($agent_id, $business_id, $property_buy_id = NULL, $data=false){
 		global $con;
 
 		if ($property_buy_id) {
 				
-		$query = mysqli_query($con, "SELECT * FROM property_buy JOIN property ON property.property_id = property_buy.property_buy_property_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure WHERE property_buy_agent_id='$agent_id' AND property_buy_business_id='$business_id' AND property_buy_id = '$property_buy_id'");
+		$query = mysqli_query($con, "SELECT * FROM property_buy JOIN property ON property.property_id = property_buy.property_id JOIN clients ON clients.clients_id = property_buy.property_buy_client_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure WHERE property_buy_agent_id='$agent_id' AND property_buy_business_id='$business_id' AND property_buy_id = '$property_buy_id'");
 
-	}else{
+		}else{
 
-		$query = mysqli_query($con, "SELECT * FROM property_buy JOIN property ON property.property_id = property_buy.property_buy_property_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure  WHERE property_buy_agent_id='$agent_id' AND property_buy_business_id='$business_id' ORDER BY property_buy_id DESC");
+			$query = mysqli_query($con, "SELECT * FROM property_buy JOIN property ON property.property_id = property_buy.property_id JOIN clients ON clients.clients_id = property_buy.property_buy_client_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure  WHERE property_buy_agent_id='$agent_id' AND property_buy_business_id='$business_id' ORDER BY property_buy_id DESC");
+		}
+
+			return $data ? $query : mysqli_num_rows($query);
 	}
+
+
+	*/
+
+	function query_property_payments($client_id, $property_buy_id, $data = false){
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM property_buy_payment JOIN property_buy ON property_buy.property_buy_id = property_buy_payment.property_buy_id WHERE client_id='$client_id' AND property_buy_payment.property_buy_id='$property_buy_id' ORDER BY property_buy_payment_id DESC ")  or die(mysqli_error($con));
 
 		return $data ? $query : mysqli_num_rows($query);
 	}
+
 
 
 	function agent_buyers_property_purchase_by_id($property_buy_id,  $data=false){
 		global $con;
 
 				
-		$query = mysqli_query($con, "SELECT * FROM property_buy JOIN property ON property.property_id = property_buy.property_buy_property_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure  LEFT JOIN agents ON agents.agent_id = property_buy.property_buy_agent_id LEFT JOIN company ON company.company_id = property_buy.property_buy_business_id  WHERE property_buy.property_buy_id='$property_buy_id'  ") or die(mysqli_error($con));
+		$query = mysqli_query($con, "SELECT * FROM property_buy JOIN clients ON clients.clients_id = property_buy.property_buy_client_id JOIN property ON property.property_id = property_buy.property_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure  LEFT JOIN agents ON agents.agent_id = property_buy.property_buy_agent_id LEFT JOIN company ON company.company_id = property_buy.property_buy_business_id  WHERE property_buy.property_buy_id='$property_buy_id'  ") or die(mysqli_error($con));
 
 		return $data ? $query : mysqli_num_rows($query);
 
@@ -741,12 +842,21 @@
 
 	function superadmin_query_buyers_property_purchase($data=false){
 		global $con;
-
 				
-		$query = mysqli_query($con, "SELECT * FROM property_buy JOIN property ON property.property_id = property_buy.property_buy_property_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure  LEFT JOIN agents ON agents.agent_id = property_buy.property_buy_agent_id LEFT JOIN company ON company.company_id = property_buy.property_buy_business_id ") or die(mysqli_error($con));
+		$query = mysqli_query($con, "SELECT * FROM property_buy JOIN clients ON clients.clients_id = property_buy.property_buy_client_id JOIN property ON property.property_id = property_buy.property_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure  LEFT JOIN agents ON agents.agent_id = property_buy.property_buy_agent_id LEFT JOIN company ON company.company_id = property_buy.property_buy_business_id ") or die(mysqli_error($con));
 
 		return $data ? $query : mysqli_num_rows($query);
 
+	}
+
+
+
+	function query_all_clients_property_purchase($client_id, $data = false){
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM property_buy JOIN clients ON clients.clients_id = property_buy.property_buy_client_id JOIN property ON property.property_id = property_buy.property_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure WHERE property_buy_client_id = '$client_id' ") or die(mysqli_error($con));
+
+		return $data ? $query : mysqli_num_rows($query);
 	}
 
 
@@ -755,9 +865,263 @@
 	function business_buyers_property_purchase($business_id, $data=false){
 		global $con;
 
-		$query = mysqli_query($con, "SELECT * FROM property_buy JOIN property ON property.property_id = property_buy.property_buy_property_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure  LEFT JOIN agents ON agents.agent_id = property_buy.property_buy_agent_id LEFT JOIN company ON company.company_id = property_buy.property_buy_business_id  WHERE property_buy_business_id='$business_id' ORDER BY property_buy_id DESC");
+		$query = mysqli_query($con, "SELECT * FROM property_buy JOIN clients ON clients.clients_id = property_buy.property_buy_client_id JOIN property ON property.property_id = property_buy.property_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure  LEFT JOIN agents ON agents.agent_id = property_buy.property_buy_agent_id LEFT JOIN company ON company.company_id = property_buy.property_buy_business_id  WHERE property_buy_business_id='$business_id' ORDER BY property_buy_id DESC");
 
 		return $data ? $query : mysqli_num_rows($query);
 	}
+
+	function clients_property_purchase($client_id, $data=false){
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM property_buy JOIN property ON property.property_id = property_buy.property_id LEFT JOIN installmental_tb ON installmental_tb.installmental_id = property_buy.property_buy_payment_structure  WHERE property_buy_client_id='$client_id' ORDER BY property_buy_id DESC");
+
+		return $data ? $query : mysqli_num_rows($query);
+	}
+
+	function query_agent_txn($business_id, $agent_id, $data = false){
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM transactions WHERE txn_business_id = '$business_id' AND txn_agent_id = '$agent_id'");
+
+		return $data ? $query : mysqli_num_rows($query);
+
+	}
+
+
+	function query_agent_subscription($business_id, $agent_id, $data = false){
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM subscription WHERE subscription_business_id = '$business_id' AND subscription_agent_id = '$agent_id'");
+
+		return $data ? $query : mysqli_num_rows($query);
+
+	}
+
+
+	function txn_reg($txn_agent_id, $txn_business_id, $txn_ref, $txn_payment_id, $txn_amount, $txn_status){
+		global $con;
+
+		$query = mysqli_query($con, "INSERT INTO transactions SET 
+			txn_agent_id = '$txn_agent_id',
+			txn_business_id = '$txn_business_id',
+			txn_ref = '$txn_ref',
+			txn_payment_id = '$txn_payment_id',
+			txn_amount = '$txn_amount',
+			txn_status = '$txn_status',
+			txn_created_on = NOW()
+		");
+		return $query;
+	}
+
+
+	function subscriptions_reg($subscription_agent_id, $subscription_business_id, $subscription_start, $subscription_ends){
+		global $con;
+
+		$query = mysqli_query($con, "INSERT INTO subscription SET
+			subscription_agent_id = '$subscription_agent_id',
+			subscription_business_id = '$subscription_business_id',
+			subscription_start = '$subscription_start',
+			subscription_ends = '$subscription_ends',
+			subscription_created_on = NOW()
+		");
+
+		return $query;
+	}
+
+	function add_reg_fee($reg_fee_privilege_id, $reg_fee_price, $reg_fee_duration){
+		global $con;
+
+		$query = mysqli_query($con, "INSERT INTO reg_fee SET
+			reg_fee_privilege_id = '$reg_fee_privilege_id',
+			reg_fee_price = '$reg_fee_price',
+			reg_fee_duration = '$reg_fee_duration',
+			reg_fee_created_at = NOW()
+		") or die(mysqli_error($con));
+
+		return $query;
+	}
+
+
+	function update_reg_fee($reg_fee_privilege_id, $reg_fee_price, $reg_fee_duration, $reg_fee_id){
+		global $con;
+
+		$query = mysqli_query($con, "UPDATE reg_fee SET
+			reg_fee_privilege_id = '$reg_fee_privilege_id',
+			reg_fee_price = '$reg_fee_price',
+			reg_fee_duration = '$reg_fee_duration'
+			WHERE reg_fee_id='$reg_fee_id'
+		") or die(mysqli_error($con));
+
+		return $query;
+	}
+
+
+	function query_all_reg_fee($data = false){
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM reg_fee JOIN privileges ON privileges.privileges_id = reg_fee.reg_fee_privilege_id ORDER BY reg_fee_id DESC");
+
+		return $data ? $query : mysqli_num_rows($query);
+	}
+
+	function query_single_reg_fee($reg_fee_id, $reg_fee_privilege_id = NULL){
+		global $con;
+
+		if ($reg_fee_id) {
+			$query = mysqli_query($con, "SELECT * FROM reg_fee WHERE reg_fee_id='$reg_fee_id' ");
+		}else if ($reg_fee_privilege_id) {
+			$query = mysqli_query($con, "SELECT * FROM reg_fee WHERE reg_fee_privilege_id='$reg_fee_privilege_id' ");
+		}
+		
+
+		return $query;
+	}
+
+
+	function client_registration($clients_title, $clients_fullname, $clients_email, $clients_photo, $clients_phone_number, $clients_address, $clients_agent_id, $clients_business_id, $clients_password ){
+		global $con;
+
+		$query = mysqli_query($con, "INSERT INTO clients SET
+			clients_title = '$clients_title',
+			clients_fullname = '$clients_fullname',
+			clients_email = '$clients_email',
+			clients_photo = '$clients_photo',
+			clients_phone_number = '$clients_phone_number',
+			clients_address = '$clients_address',
+			clients_agent_id = '$clients_agent_id',
+			clients_business_id = '$clients_business_id',
+			clients_password = '$clients_password',
+			clients_created_on = NOW()
+		") or die( mysqli_error($con) );
+
+		return $query; 
+	}
+
+
+	function update_client_profile($clients_title, $clients_fullname, $clients_photo, $clients_phone_number, $clients_address, $clients_occupation, $clients_dob, $clients_valid_id, $clients_id){
+		global $con;
+
+		$query = mysqli_query($con, "UPDATE clients SET
+			clients_title = '$clients_title',
+			clients_fullname = '$clients_fullname',
+			clients_photo = '$clients_photo',
+			clients_phone_number = '$clients_phone_number',
+			clients_address = '$clients_address',
+			clients_occupation = '$clients_occupation',
+			clients_dob = '$clients_dob',
+			clients_valid_id = '$clients_valid_id',
+			client_profile_update_count = client_profile_update_count + 1
+			WHERE clients_id = '$clients_id'
+		") or die( mysqli_error($con) );
+
+		return $query; 
+
+	}
+
+	function query_clients_email_exist($email){
+		global $con; 
+
+		$query = mysqli_query($con, "SELECT * FROM clients WHERE clients_email='$email'");
+
+		return mysqli_num_rows($query);
+	}
+
+
+	function query_client_next_of_kin($client_id,  $data = false){
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM client_next_of_kin WHERE client_id = '$client_id' ");
+
+		return $data ? $query : mysqli_num_rows($query);
+	}
+
+
+	function register_client_nok($client_id, $client_next_of_kin_fullname, $client_next_of_kin_email, $client_next_of_kin_occupation, $client_next_of_kin_address, $client_next_of_kin_relationship, $client_next_of_kin_number){
+		global $con;
+
+		$query = mysqli_query($con, "INSERT INTO client_next_of_kin SET 
+			client_id = '$client_id',
+			client_next_of_kin_fullname = '$client_next_of_kin_fullname',
+			client_next_of_kin_email = '$client_next_of_kin_email',
+			client_next_of_kin_occupation = '$client_next_of_kin_occupation',
+			client_next_of_kin_address = '$client_next_of_kin_address',
+			client_next_of_kin_relationship = '$client_next_of_kin_relationship',
+			client_next_of_kin_number = '$client_next_of_kin_number',
+			client_next_of_kin_created_on = NOW()
+		") or die( mysqli_error($con) );
+
+		return $query;
+	}
+
+
+
+
+	function update_client_nok($client_next_of_kin_id, $client_next_of_kin_fullname, $client_next_of_kin_email, $client_next_of_kin_occupation, $client_next_of_kin_address, $client_next_of_kin_relationship, $client_next_of_kin_number){
+		global $con;
+
+		$query = mysqli_query($con, "UPDATE client_next_of_kin SET
+			client_next_of_kin_fullname = '$client_next_of_kin_fullname',
+			client_next_of_kin_email = '$client_next_of_kin_email',
+			client_next_of_kin_occupation = '$client_next_of_kin_occupation',
+			client_next_of_kin_address = '$client_next_of_kin_address',
+			client_next_of_kin_relationship = '$client_next_of_kin_relationship',
+			client_next_of_kin_number = '$client_next_of_kin_number'
+			WHERE client_next_of_kin_id = '$client_next_of_kin_id'
+		") or die( mysqli_error($con) );
+
+		return $query;
+	}
+
+	function update_property($property_id, $property_buy_payment_id, $client_id, $status){
+		global $con;
+
+		$query_property = query_single_property($property_id, "property_id", true);
+
+		$fetch_property = mysqli_fetch_assoc($query_property);
+		
+		if ( $fetch_property['property_status'] != 'sold') {
+			$query = mysqli_query($con, "UPDATE property SET property_status='sold' WHERE property_id = '$property_id' ") or die( mysqli_error($con) );
+		}
+
+		return update_property_payment($property_buy_payment_id, $property_id, $client_id, $status);
+	}
+
+
+	function update_property_payment($property_buy_payment_id, $property_id,  $client_id, $status){
+		global $con;
+
+		$query = mysqli_query($con, "UPDATE property_buy_payment SET property_payment_status='$status' WHERE property_id = '$property_id' AND property_buy_payment_id = '$property_buy_payment_id' AND client_id='$client_id' ") or die( mysqli_error($con) );
+
+		return $query;
+	}
+
+
+	function get_client_total_months($property_id, $property_buy_id, $client_id){
+		global $con;
+
+		$query = mysqli_query($con, "SELECT SUM(property_buy_amount_paid) AS total_payments FROM property_buy_payment WHERE client_id='$client_id' AND property_buy_id='$property_buy_id' AND property_id ='$property_id' AND property_payment_status='approved' ");
+
+		$fetch = mysqli_fetch_assoc($query);
+
+		return (int)$fetch['total_payments'];
+
+	}
+	
+	function query_clients_attend_event($client_id){
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM event_invite WHERE event_client_id='$client_id' AND event_invite_status='will attend' ");
+
+		return mysqli_num_rows($query);
+	}
+
+	function query_client_total_payments($client_id){
+		global $con;
+
+		$query = mysqli_query($con, "SELECT * FROM property_buy_payment WHERE client_id = '$client_id' ");
+
+		return mysqli_num_rows($query);
+	}
+
 ?>
 

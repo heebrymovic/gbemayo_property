@@ -18,16 +18,12 @@
     
     $currentTime = ($the_hour > 17) ? "Evening" : (($the_hour > 12) ? "Afternoon" : "Morning");
 
-
-
 ?>
 
 
 
 <!doctype html>
 <html class="no-js " lang="en">
-
-<!-- Mirrored from www.thememakker.com/templates/amaze/html/dist/realestate/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 18 Apr 2023 12:19:56 GMT -->
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -108,26 +104,24 @@
                                     <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
                                         <img class="rounded-circle"  src="<?php echo $fetch_company_info['company_photo'] != "" ? $fetch_company_info['company_photo'] : '../assets/images/profile_av.png'  ?>" style="width:30px; height: 30px;object-fit: cover;" alt="User">
                                     </a>
-                                    <ul class="dropdown-menu">
+                                    <ul class="dropdown-menu pb-3">
                                         <li>
                                             <div class="user-info">
                                                 <h5 class="user-name mb-0"><?php echo  $fetch_company_info['company_name']  ?></h5>
-                                                <p class="user-position font-13">Available</p>
+                                                <!-- <p class="user-position font-13">Available</p>
                                                 <a title="facebook" href="javascript:void(0);"><i class="zmdi zmdi-facebook"></i></a>
                                                 <a title="twitter" href="javascript:void(0);"><i class="zmdi zmdi-twitter"></i></a>
                                                 <a title="instagram" href="javascript:void(0);"><i class="zmdi zmdi-instagram"></i></a>
                                                 <a title="linkedin" href="javascript:void(0);"><i class="zmdi zmdi-linkedin-box"></i></a>
                                                 <a title="dribbble" href="javascript:void(0);"><i class="zmdi zmdi-dribbble"></i></a>
-                                                <hr>
+                                                <hr> -->
                                             </div>
                                         </li>                            
-                                        <li><a href="profile"><i class="icon-user mr-2"></i> <span>My Profile</span> <span class="badge badge-success float-right">80%</span></a></li>
-                                       <!--  <li><a href="taskboard.html"><i class="icon-notebook mr-2"></i><span>Taskboard</span> <span class="badge badge-info float-right">New</span></a></li>
-                                        <li><a href="locked.html"><i class="icon-lock mr-2"></i><span>Locked</span></a></li> -->
-                                        <li><a href="logout"><i class="icon-power mr-2"></i><span>Sign Out</span></a></li>
+                                        <li class="mt-2"><a href="profile"><i class="icon-user mr-2"></i> <span>My Profile</span> </a></li>
+                                        <li class="mt-2"><a href="logout"><i class="icon-power mr-2"></i><span>Sign Out</span></a></li>
                                     </ul>
                                 </li>
-                                <li><a href="javascript:void(0);" class="js-right-sidebar"><i class="icon-equalizer"></i></a></li>
+        
                             </ul>
                         </div>
                     </div>
@@ -153,7 +147,7 @@
                                     <?php
                                         if ($session_logged_company_privilege_id == 1) {
                                         ?>
-
+                                            <li><a href="add-reg-fee">Set reg fee</a></li>
                                             <li><a href="business-list">Business List</a></li>
                                         <?php
                                             }
@@ -161,6 +155,7 @@
                                         ?>
                                     
                                     <li><a href="agent-list">Agents List</a></li>
+                                    <li><a href="client-list">Clients List</a></li>
                                 </ul>
                             </li>
                            

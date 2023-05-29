@@ -15,9 +15,15 @@ include("includes/header.php");
                         </ul>
                         <h1 class="mb-1 mt-1">Client Lists</h1>
                     </div>            
-                    <div class="col-lg-6 col-md-12 text-md-right">
-                        
-                    </div>
+                
+
+                    <div class="col-lg-6 col-md-12 text-md-right mt-3">
+                                <h6><b>Referral link</b></h6>
+                                 <input  type="text" style="display: none;" id="copyInput" value='<?php echo get_url("/CD/gbemayo/clients/register"). "?refid=" . $fetch_agent_info["agent_referral_id"] ?>'>
+
+                                <p><?php echo get_url("/CD/gbemayo/clients/register"). "?refid=" . $fetch_agent_info["agent_referral_id"] ?></p>
+                                <button class="btn btn-default" id="copyData">Copy Link</button>
+                            </div>
                 </div>
             </div>
         </div>
@@ -34,28 +40,27 @@ include("includes/header.php");
                                         <th># ID</th>
                                         <th>Name</th>
                                         <th>Phone Number</th>
-                                        <th>Property Name</th>
-                                        <th>Subscription Status</th>
+                                        <th>Email</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
 
-                                        $query_all_clients = agent_buyers_property_purchase($session_logged_in_agent_id, $session_logged_in_business_id, NULL, true);
+                                        $query_all_clients = query_clients($session_logged_in_agent_id, $session_logged_in_business_id, NULL, true);
                                         $count = 1;
                                         while($fetch_all_clients = mysqli_fetch_assoc($query_all_clients)){
 
                                             extract($fetch_all_clients);
                                         ?>
+
                                             <tr>
                                                 <td><?php echo $count++;  ?></td>
-                                                <td><?php echo ucwords($buyers_title . " ". $buyers_fullname) ;   ?></td>
-                                                <td><?php echo $buyers_phone_number;  ?></td>
-                                                <td><?php echo $property_name;  ?></td>
-                                                <td><span class="badge <?php echo $property_buy_status =='pending' ?  'badge-warning' : 'badge-success' ;  ?>"><?php echo $property_buy_status;  ?></span></td>
+                                                <td><?php echo ucwords($clients_title . " ". $clients_fullname) ;   ?></td>
+                                                <td><?php echo $clients_phone_number;  ?></td>
+                                                <td><?php echo $clients_email;  ?></td>
                                                 <td>  
-                                                    <a class="btn btn-success text-white btn-sm" href="client-details?agent-id=<?php echo base64_encode($session_logged_in_agent_id) ?>&business-id=<?php echo base64_encode($session_logged_in_business_id) ?>&purchase-id=<?php echo base64_encode($property_buy_id) ?>">View more</a>
+                                                    <a class="btn btn-success text-white btn-sm" href="client-details?client_id=<?php echo base64_encode($clients_id) ?>">View more</a>
                                                 </td>
                                                
                                             </tr>

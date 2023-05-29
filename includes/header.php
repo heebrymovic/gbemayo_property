@@ -7,7 +7,7 @@
 
     $fetch_agent_info = mysqli_fetch_assoc($query_agent_info);
 
-      $the_hour = date("H");
+    $the_hour = date("H");
     
     $currentTime = ($the_hour > 17) ? "Evening" : (($the_hour > 12) ? "Afternoon" : "Morning");
 
@@ -62,7 +62,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="navbar-logo">
                             <a href="javascript:void(0);" class="bars"></a>
-                            <a class="navbar-brand" href="dashboard"><img src="assets/images/logo.svg" width="30" alt="Amaze"><span class="ml-2">Gbemayo Properties</span></a>
+                            <a class="navbar-brand" href="dashboard"><img src="assets/images/logo.svg" width="30" alt="Amaze"><span class="ml-2">Gbemayo</span></a>
                         </div>
                         <div class="d-flex justify-content-end justify-content-md-between align-items-center flex-grow-1">
                             <div class="d-flex align-items-center currently_maintain hidden-xs">
@@ -145,16 +145,18 @@
                                 }
                             ?>
 
-                            <li><a href="" class="menu-toggle"><i class="zmdi zmdi-apps"></i><span>Plans</span></a>
-
                             <li><a href="" class="menu-toggle"><i class="zmdi zmdi-apps"></i><span>Investments</span></a>
 
-                            <li class="open">
-                                <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-shopping-basket"></i><span>Transactions</span></a>
-                                <ul class="ml-menu">
-                                    <li><a href="ec-checkout.html">Checkout</a></li>
-                                </ul>
-                            </li>                       
+                            <li>
+                                <a href="transaction-list" class="menu-toggle"><i class="zmdi zmdi-shopping-basket"></i><span>Transactions</span></a>
+                            </li>      
+                               <?php
+                                if ($session_logged_in_privilege_id == 3) {
+                            ?>                 
+                            <li><a href="subscription-list" class="menu-toggle"><i class="zmdi zmdi-apps"></i><span>Subscriptions</span></a></li>
+                             <?php
+                                }
+                            ?>
                         
                         </ul>
                     </div>

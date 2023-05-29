@@ -161,34 +161,21 @@ include("includes/header.php");
                                 <tbody>
                                     <?php
 
-                            
 
-                                        $query_all_clients = agent_buyers_property_purchase($agent_id, $business_id, NULL, true);
+                                       /* $query_all_clients = agent_buyers_property_purchase($agent_id, $business_id, NULL, true);
                                         $count = 1;
                                         while($fetch_all_clients = mysqli_fetch_assoc($query_all_clients)){
 
-                                            extract($fetch_all_clients);
+                                            extract($fetch_all_clients);*/
                                         ?>
                                             <tr>
-                                                <td><?php echo $count++;  ?></td>
-                                                <td><?php echo ucwords($property_name) ?></td>
-                                                <td>N<?php echo number_format($fetch_all_clients['property_price']); ?></td>
-                                                <td>
-                                                    <span  style="white-space:initial;">N<?php echo $property_buy_payment_structure ? number_format($installmental_property_amount)." for " . $installmental_property_duration: "Full Payment" ?>
-                                                    </span>
-                                                </td>
-                                                <td>N<?php echo number_format($fetch_all_clients['property_buy_amount_paid']); ?></td>
-                                                <td><span class="badge <?php
-                                                    echo $property_buy_status == 'pending' ? 'badge-warning text-white': ($property_buy_status == 'approved' ? 'badge-success' : 'badge-danger')
-                                                 ?>"><?php
-                                                    echo $property_buy_status;
-                                                 ?></span></td>
-                                                <td><?php echo date("D, d M Y", strtotime($property_buy_created_on)); ?></td>
+                                                <td><?php echo @$count++;  ?></td>
+                                               
                                             </tr>
 
                                         <?php
 
-                                            }
+                                           /* }*/
 
                                         ?>
                                 </tbody>

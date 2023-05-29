@@ -30,12 +30,16 @@
                                 <thead>
                                     <tr>
                                         <th># ID</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Phone Number</th>
+                                        <th>Clients Name</th>
                                         <th>Agent Name</th>
+                                        <?php
+                                           if ($session_logged_company_privilege_id == 1){
+                                        ?>
+                                        <th>Business Name</th>
+                                         <?php
+                                            }
+                                        ?>
                                         <th>Property Name</th>
-                                        <th>Payment Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -52,28 +56,26 @@
                                                 <td><?php echo $count++;  ?></td>
                                                 <td>
                                                     <a href="">
-                                                        <img src="../<?php echo $buyers_passport; ?>" class="rounded-circle avatar" alt="">
-                                                        <span><?php echo $buyers_title . " " . $buyers_fullname ?></span>
+                                                        <img src="../clients/<?php echo $clients_photo; ?>" style="object-fit: cover;" class="rounded-circle avatar" alt="">
+                                                        <span><?php echo $clients_title . " " . $clients_fullname ?></span>
                                                     </a>
                                                 </td>
 
-                                                <td><?php echo $buyers_email ?></td>
-                                                <td><?php echo $buyers_phone_number ?></td>
-                                                <td><?php echo $property_buy_agent_id ? $agent_fullname : $company_name;  ?></td>
+                                                <td><?php 
+                                                echo $session_logged_company_privilege_id == 1 ? $agent_fullname : ($agent_fullname ? $agent_fullname : $company_name );
+
+                                                ?></td>
+                                                <?php
+                                                    if ($session_logged_company_privilege_id == 1){
+                                                ?>
+                                                <td><?php echo $company_name;  ?></td>
+                                                <?php
+                                                    }
+                                                ?>
                                                 <td><?php echo $property_name;?></td>
-                                                <td><span class="badge <?php echo $property_buy_status =='pending' ?  'badge-warning' : 'badge-success';  ?>"><?php echo $property_buy_status;  ?></span></td>
+                                                <!-- <td><span class="badge echo $property_buy_status =='pending' ?  'badge-warning' : 'badge-success';">echo $property_buy_status;  </span></td> -->
                                                 <td>  
                                                     <a class="btn btn-success text-white btn-sm" href="purchase-details?purchase-id=<?php echo base64_encode($property_buy_id) ?>">View more</a>
-
-                                                    <?php
-                                                        if ($session_logged_company_privilege_id == 1  && $property_buy_status != 'approved') {
-                                    
-                                                    ?>
-                                                    <a class="btn btn-info text-white btn-sm" href="approve-purchase?property_buy_id=<?php echo base64_encode($property_buy_id) ?>">Approve</a>
-                                                    <a class="btn btn-warning btn-sm" href="">Decline</a>
-                                                    <?php
-                                                        }
-                                                    ?>
                                                 </td>
                                             </tr>
 

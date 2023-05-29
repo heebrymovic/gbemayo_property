@@ -7,7 +7,12 @@
             <div class="container">
                 <div class="row clearfix">
                     <div class="col-lg-6 col-md-12">
-                        <ul class="breadcrumb pl-0 pb-0 ">
+                       
+                        <h1 class="mt-1">
+                            <strong class="text text-secondary">You are logged in as <?php echo ucwords(get_privileges_name($session_logged_in_privilege_id)) ?></strong>
+                        </h1>
+                        
+                        <ul class="breadcrumb pl-0 pb-0 mt-4">
                             <li class="breadcrumb-item active"><a href="dashboard">Home</a></li>
                         </ul>
                         <h1 class="mb-1 mt-1">Good <?php echo $currentTime .", " . ucwords(explode(" ",$fetch_agent_info['agent_fullname'])[0]) ?></h1>
@@ -34,7 +39,7 @@
                 <?php
                      if ($session_logged_in_privilege_id == 3 && $fetch_agent_info["agent_payment_status"] == "inactive") {
                         include("realtor-subscribe-msg.php");
-                    }else{
+                    }else if ($session_logged_in_privilege_id == 4 && $fetch_agent_info["agent_payment_status"] == "inactive"){
                         include("marketers-subscribe-msg.php");
                     }
                 ?>
