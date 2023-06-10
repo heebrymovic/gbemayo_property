@@ -41,13 +41,13 @@
         $address = mysqli_real_escape_string($con, addslashes($_POST['address']));   
 
 
-        if( query_event_invitee_exists($email) > 0 ){
+        if( query_event_invitee_exists($email, $event_id) > 0 ){
 
             $output = '<div class="alert alert-danger mt-3">
                   Email has already been registered for this event.
                 </div>';
         }else{
-            $event_reg = event_reg($event_id, $event_invite_agent_id, $event_invite_business_id, $fullname, $email, $phone_no, $gender, $address );
+            $event_reg = normal_event_reg($event_id, $event_invite_agent_id, $event_invite_business_id, $fullname, $email, $phone_no, $gender, $address );
 
             if ($event_reg) {
                 $output = '<div class="alert alert-success mt-3">
@@ -127,7 +127,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="navbar-logo">
                             <!-- <a href="javascript:void(0);" class="bars"></a> -->
-                            <a class="navbar-brand" href="index-2.html"><img src="assets/images/logo.svg" width="30" alt="Amaze"><span class="ml-2">Gbemayo Properties</span></a>
+                            <a class="navbar-brand" href=""><img src="assets/images/logo.svg" width="30" alt="Amaze"><span class="ml-2">Gbemayo Properties</span></a>
                         </div>
                         <div class="d-flex justify-content-end justify-content-md-between align-items-center flex-grow-1"></div>
                     </div>
@@ -135,11 +135,6 @@
             </div>        
         </div>
     </nav>
-
-   <!--  <aside id="leftsidebar" class="sidebar h_menu"></aside> -->
-
-    <!-- Right Sidebar -->
-
 
     <!-- Main Content -->
     <div class="body_area" >
@@ -164,7 +159,11 @@
 
                              <h5>Date:</h5>
                             <p><?php echo date("D, d M Y", strtotime($fetch_event_info['events_date'])) ?></p>
-                    </div>        
+                    </div>  
+
+                     <div class="col-lg-6 col-md-12">
+                         <img style="max-height: 220px; max-width: 100%;" src="realestate/<?php echo $fetch_event_info['events_banner'] ?>">
+                    </div>
                     
                 </div>
             </div>
@@ -212,6 +211,16 @@
                                             </div>
                                         </div>
 
+
+                                         <div class="col-lg-12 col-md-12 mb-3">
+                                            <p> <b>Gender</b> </p>
+                                            <select class="form-control show-tick" name="gender" required value="<?php echo @$gender ?>">
+                                                <option>Choose gender</option>
+                                                <option>Male</option>
+                                                <option>Female</option>
+                                            </select>
+                                        </div>
+
                                         <div class="col-lg-12 col-md-12">
                                             <b>Email Address</b>
                                             <div class="input-group mb-3">
@@ -232,14 +241,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-12 col-md-12 mb-3">
-                                            <p> <b>Gender</b> </p>
-                                            <select class="form-control show-tick" name="gender" required value="<?php echo @$gender ?>">
-                                                <option>Choose gender</option>
-                                                <option>Male</option>
-                                                <option>Female</option>
-                                            </select>
-                                        </div>
+    
                                         
                                         <div class="col-lg-12 col-md-12">
                                             <b>Address</b>

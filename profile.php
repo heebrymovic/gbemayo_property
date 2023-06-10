@@ -248,5 +248,4 @@
 <script src="https://www.thememakker.com/templates/amaze/html/js/pages/profile.js"></script>
 </body>
 
-<!-- Mirrored from www.thememakker.com/templates/amaze/html/dist/profile.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 18 Apr 2023 12:17:06 GMT -->
 </html>

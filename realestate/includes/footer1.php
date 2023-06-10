@@ -12,9 +12,43 @@
 <script src="../assets/bundles/datatablescripts.bundle.js"></script>
 
 <script>
+
+    copyData.addEventListener("click", copyToClipBoard);
+    
+    function copyToClipBoard(e) {
+
+        var defaults = this.innerHTML;
+
+        let copyInput = document.querySelector("#copyInput");
+
+        console.log( copyInput)
+
+        copyInput.style.display = 'block'
+        
+        copyInput.select();
+
+         document.execCommand('copy');
+
+         this.innerHTML = "Copied"
+
+         copyInput.style.display = 'none'
+
+         setTimeout(() => this.innerHTML = defaults, 1000)
+    }
+
+    function openFullscreen(elem) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+      }
+    }
         
     $(document).ready(function() {
             $('#datatables').DataTable({});
+            $('#datatables1').DataTable({});
     });
 </script>
 

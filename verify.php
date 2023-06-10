@@ -47,7 +47,13 @@ if ( isset($_GET['ref']) && !empty($_GET['ref']) && isset($_GET['status']) && ( 
 
 
       }else  if ($status == "success") {
-        
+            
+              $txn_payment_id = $res -> data -> id;
+              $txn_ref_id = $res -> data -> reference;
+              $txn_amount = (int)($res -> data -> amount) / 100;
+
+            if ( ($_SESSION['store']['payment_type'] == "register") ) {
+
              $agent_privilege_id =  $_SESSION['store']['agent_privilege_id'];
               $fullname = $_SESSION['store']['fullname'];
               $email = $_SESSION['store']['email'];
@@ -60,16 +66,23 @@ if ( isset($_GET['ref']) && !empty($_GET['ref']) && isset($_GET['status']) && ( 
               $agent_referred_by_id = $_SESSION['store']['agent_referred_by_id'];
               $referral_type = $_SESSION['store']['referral_type'];
               $event_id = $_SESSION['store']['event_id'];
-              $txn_payment_id = $res -> data -> id;
-              $txn_ref_id = $res -> data -> reference;
-              $txn_amount = (int)($res -> data -> amount) / 100;
-
+            
 
               $register_agent = agent_registration($agent_privilege_id, $fullname, $email, $password, $phone_no, $address,$uploadpath ,$business_id,  $referral_id, $agent_referred_by_id, $referral_type,$event_id, 'active');  
 
+              }elseif ( ($_SESSION['store']['payment_type'] == "upgrade")) {
+                  authenticate_agent_login();
+
+                  echo $session_logged_in_agent_id;
+               
+                  $register_agent = update_agent_subscription($session_logged_in_agent_id, $_SESSION['store']['upgrade_type']);
+                  $business_id = $session_logged_in_business_id;
+              }
+
+
               if ($register_agent) {
                 
-                $txn_agent_id  = mysqli_insert_id($con);
+                $txn_agent_id  =  $_SESSION['store']['payment_type'] == "upgrade" ? $session_logged_in_agent_id : mysqli_insert_id($con);
 
                 $txn_reg = txn_reg($txn_agent_id, $business_id, $txn_ref_id, $txn_payment_id, $txn_amount, $status);
 
@@ -89,10 +102,18 @@ if ( isset($_GET['ref']) && !empty($_GET['ref']) && isset($_GET['status']) && ( 
 
                 unset($_SESSION['store']);
 
-                echo "<script>
-                  alert('Verification Successful. You can proceed to login');
-                  window.location.href='login'
-                </script>";
+                if ( (@$_SESSION['store']['payment_type'] == "register")) {
+                    echo "<script>
+                    alert('Verification Successful. You can proceed to login');
+                    window.location.href='login'
+                  </script>";  
+                }else{
+                    echo "<script>
+                    alert('Verification Successful');
+                    window.location.href='transaction-list'
+                  </script>";
+                }
+                
                 
               }else{
 

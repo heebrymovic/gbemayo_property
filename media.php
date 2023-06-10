@@ -3,6 +3,10 @@
 include("includes/header.php"); 
 realtors_route();
 
+if ( $fetch_agent_info['agent_subscription_status'] !== "active") {
+    header("location:dashboard");
+}
+
 ?>
 
 
@@ -25,7 +29,7 @@ realtors_route();
                 </div>
 
                   <?php
-                    if ($session_logged_in_privilege_id == 3 && $fetch_agent_info["agent_payment_status"] == "inactive") {
+                    if ($session_logged_in_privilege_id == 3 && $fetch_agent_info["agent_subscription_status"] == "inactive") {
                         include("realtor-subscribe-msg.php");
                     }
                 ?>    

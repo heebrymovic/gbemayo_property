@@ -1,6 +1,10 @@
 <?php 
    include("includes/plugins.php");
 
+   /*print_r( $_SESSION );
+
+   die();
+*/
    if (isset($_SESSION['store']['payment_type']) && ($_SESSION['store']['payment_type'] == "register") ) {
      
      $fullname = $_SESSION['store']['fullname'];
@@ -9,15 +13,31 @@
         $phone_no = $_SESSION['store']['phone_no'];
 
    }elseif (isset($_SESSION['store']['payment_type']) && ($_SESSION['store']['payment_type'] == "upgrade") ) {
-       
+        
+        authenticate_agent_login();
+
+        $query_agent_info = admin_query_agent($session_logged_in_business_id, $session_logged_in_agent_id, true);
+        $fetch_agent_info = mysqli_fetch_assoc($query_agent_info);
+        $fullname = $fetch_agent_info['agent_fullname'];
+        $email = $fetch_agent_info['agent_email'];
+        $address = $fetch_agent_info['agent_address'];
+        $phone_no = $fetch_agent_info['agent_phone_number'];
        
    }else{
-        header("location:register");
+        
+        if ($_SESSION['store']['payment_type'] == "register") {
+           
+           header("location:register");
+
+        }else if ($_SESSION['store']['payment_type'] == "upgrade"){
+            header("location:dashboard");
+        }
+        
    }
 
    if (isset($_POST['cancel'])) {
        
-       unlink($_SESSION['store']['uploadpath']);
+       @unlink($_SESSION['store']['uploadpath']);
 
        unset($_SESSION['store']);
 
@@ -93,7 +113,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="navbar-logo">
                             <!-- <a href="javascript:void(0);" class="bars"></a> -->
-                            <a class="navbar-brand" href="index-2.html"><img src="assets/images/logo.svg" width="30" alt="Amaze"><span class="ml-2">Gbemayo Properties</span></a>
+                            <a class="navbar-brand" href=""><img src="assets/images/logo.svg" width="30" alt="Amaze"><span class="ml-2">Gbemayo Properties</span></a>
                         </div>
                         <div class="d-flex justify-content-end justify-content-md-between align-items-center flex-grow-1"></div>
                     </div>
@@ -210,7 +230,6 @@
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <button class="btn btn-danger text-white btn-block" name="cancel">Cancel payment</button>
-
                                         </div>
                                     </div>
                                 </div>

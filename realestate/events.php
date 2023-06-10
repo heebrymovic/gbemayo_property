@@ -3,26 +3,31 @@
 
  if (isset($_POST['add_event'])) {
 
-        $output = "";
+        
         $event_title = mysqli_real_escape_string($con, $_POST['event_title']);
         $event_desc  = mysqli_real_escape_string($con, $_POST['event_desc']);
         $event_date  = mysqli_real_escape_string($con, $_POST['event_date']);
         $event_venue  = mysqli_real_escape_string($con, $_POST['event_venue']);
 
+        $tmpname = $_FILES['event_banner']['tmp_name'];
+        $filename = $_FILES['event_banner']['name'];
+        $foldername = 'events_banner/' ;
+        $uploadpath = $foldername .uniqid(). $filename;
+    
 
+        if (move_uploaded_file($tmpname, $uploadpath)) {
+          
+            add_events($event_title, $event_desc, $uploadpath, $event_venue, $event_date);
 
-        $add_event = add_events($event_title, $event_desc, $event_venue, $event_date);
-
-        if ($add_event) {
             $output  =  "<div class='alert alert-success ml-3'>
                 <strong>Event Successfully Added.</strong>
             </div>";
+
         }else{
             $output  =  "<div class='alert alert-danger ml-3'>
-                <strong>Something went wrong. Try again later.</strong>
-            </div>";
+                    <strong>Something went wrong. Try again later.</strong>
+                </div>";
         }
-
     
     }
 ?>
@@ -41,7 +46,7 @@
                 <div class="modal-header">
                     <h4 class="title" id="defaultModalLabel">Add Event</h4>
                 </div>
-                <form action="" method="POST">
+                <form action="" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
         
                     <div class="form-group">
@@ -54,6 +59,12 @@
                             <textarea class="form-control no-resize" name="event_desc" placeholder="Event Description..."></textarea>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <div class="form-line">
+                            <input type="file" class="form-control" name="event_banner">
+                        </div>
+                    </div>  
 
                     <div class="form-group">
                         <div class="form-line">

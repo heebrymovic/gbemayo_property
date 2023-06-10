@@ -8,6 +8,5 @@
 	else{
 		/////do nothing
 	}
-	$site_name = "QuickBull Investment";
-	$single_sitename = "QuickBull";
+	
 ?>

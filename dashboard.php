@@ -25,9 +25,9 @@
                         ?>
                             <div class="col-lg-6 col-md-12 text-md-right mt-3">
                                 <h6><b>Referral link</b></h6>
-                                 <input  type="text" style="display: none;" id="copyInput" value='<?php echo get_url("/CD/gbemayo/register"). "?refid=" . $fetch_agent_info["agent_referral_id"] ?>'>
+                                 <input  type="text" style="display: none;" id="copyInput" value='<?php echo get_url("register"). "?refid=" . $fetch_agent_info["agent_referral_id"] ?>'>
 
-                                <p><?php echo get_url("/CD/gbemayo/register"). "?refid=" . $fetch_agent_info["agent_referral_id"] ?></p>
+                                <p><?php echo get_url("register"). "?refid=" . $fetch_agent_info["agent_referral_id"] ?></p>
                                 <button class="btn btn-default" id="copyData">Copy Link</button>
                             </div>
 
@@ -37,9 +37,9 @@
                 </div>
 
                 <?php
-                     if ($session_logged_in_privilege_id == 3 && $fetch_agent_info["agent_payment_status"] == "inactive") {
+                     if ($session_logged_in_privilege_id == 3 && $fetch_agent_info["agent_subscription_status"] == "inactive") {
                         include("realtor-subscribe-msg.php");
-                    }else if ($session_logged_in_privilege_id == 4 && $fetch_agent_info["agent_payment_status"] == "inactive"){
+                    }else if ($session_logged_in_privilege_id == 4 && $fetch_agent_info["agent_subscription_status"] == "inactive"){
                         include("marketers-subscribe-msg.php");
                     }
                 ?>
@@ -50,57 +50,88 @@
             <div class="row clearfix row-deck">
                 <div class="col-lg-3 col-md-6 col-sm-6">
                     <div class="card">
-                        <div class="header">
-                            <h2><strong>Orders</strong> Received</h2>                        
+                        <div class="header pb-1">
+                            <h2><strong>Total</strong> Property</h2>                        
                         </div>
-                        <div class="body">
-                            <h3 class="mb-0">47,012</h3>
-                            <small class="displayblock">23% Average <i class="zmdi zmdi-trending-up"></i></small>                    
+                        <div class="body py-2">
+                            <h3 class="mb-0"><?php echo query_all_property()  ?></h3>
                         </div>
-                        <!-- <div class="sparkline" data-type="line" data-spot-Radius="1" data-max-Spot-Color="#fff133" data-offset="90" data-width="100%" data-height="40px"
-                        data-line-Width="1" data-line-Color="#fff133" data-fill-Color="#fff133">4,2,7,3,3,4,3,6,4,4,1,5,2,3,9,4,3</div> -->
+                        
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-6">
                     <div class="card">
-                        <div class="header">
-                            <h2><strong>Total</strong> Sales</h2>
+                        <div class="header pb-1">
+                            <h2><strong>Total</strong> Events</h2>
                         </div>
-                        <div class="body">
-                            <h3 class="mb-0">512</h3>
-                            <small class="displayblock">18% Average <i class="zmdi zmdi-trending-down"></i></small>
+                        <div class="body py-3">
+                            <h3 class="mb-0"><?php echo query_all_events(); ?></h3>
                         </div>
-                       <!--  <div class="sparkline" data-type="line" data-spot-Radius="1" data-max-Spot-Color="#60bafd" data-offset="90" data-width="100%" data-height="40px"
-                        data-line-Width="1" data-line-Color="#60bafd" data-fill-Color="#60bafd">4,2,7,3,3,1,5,2,3,9,4,3,6,4,4,4,3</div> -->
+                      
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-6">
                     <div class="card">
-                        <div class="header">
-                            <h2><strong>Total</strong> Sales</h2>
+                        <div class="header pb-1">
+                            <h2><strong>Total</strong> Clients</h2>
                         </div>
-                        <div class="body">
-                            <h3 class="mb-0">512</h3>
-                            <small class="displayblock">18% Average <i class="zmdi zmdi-trending-down"></i></small>
+                        <div class="body py-3">
+                            <h3 class="mb-0"><?php echo query_clients($session_logged_in_agent_id, $session_logged_in_business_id) ?></h3>
                         </div>
-                       <!--  <div class="sparkline" data-type="line" data-spot-Radius="1" data-max-Spot-Color="#bce63a" data-offset="90" data-width="100%" data-height="40px"
-                        data-line-Width="1" data-line-Color="#bce63a" data-fill-Color="#bce63a">4,2,7,3,3,1,5,2,3,9,4,3,6,4,4,4,3</div> -->
+                     
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-6">
                     <div class="card">
-                        <div class="header">
-                            <h2><strong>Revenue</strong></h2>                        
+                        <div class="header pb-1">
+                            <h2><strong>Total</strong> Sales</h2>                        
                         </div>
-                        <div class="body">
+                        <div class="body py-3">
+                            <h3 class="mb-0"><?php echo agent_sold_property($session_logged_in_agent_id, $session_logged_in_business_id) ?></h3>
+                        </div>
+                        
+                    </div>
+                </div>   
+
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card">
+                        <div class="header pb-1">
+                            <h2><strong>Total</strong> Events Invitee</h2>                        
+                        </div>
+                        <div class="body py-3">
                             <h3 class="mb-0">1,612</h3>
-                            <small class="displayblock">13% Average <i class="zmdi zmdi-trending-up"></i></small>                        
                         </div>
-                        <!-- <div class="sparkline" data-type="line" data-spot-Radius="1" data-max-Spot-Color="#b875d6" data-offset="90" data-width="100%" data-height="40px"
-                        data-line-Width="1" data-line-Color="#b875d6" data-fill-Color="#b875d6">4,2,9,4,3,6,4,4,7,3,3,1,5,2,3,4,3</div> -->
+                        
                     </div>
-                </div>           
+                </div>   
+                
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card">
+                        <div class="header pb-1">
+                            <h2><strong>Total</strong> Media</h2>                        
+                        </div>
+                        <div class="body py-3">
+                            <h3 class="mb-0">1,612</h3>
+                        </div>
+                        
+                    </div>
+                </div>  
+
+                 <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card">
+                        <div class="header pb-1">
+                            <h2><strong>Total</strong> Transactions</h2>                        
+                        </div>
+                        <div class="body py-3">
+                            <h3 class="mb-0">1,612</h3>
+                        </div>
+                        
+                    </div>
+                </div>   
+
             </div>
+
+
             
            
             

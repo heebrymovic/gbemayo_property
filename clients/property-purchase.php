@@ -47,6 +47,7 @@
                 $output = "<div class='alert alert-success my-2'>
                     Subscription information successfully summitted. Kindly wait while admin comfirm your transactions and get back to you    
                 </div>";
+                header("refresh:3; url=purchase-list");
              }else{
                  $output = "<div class='alert alert-danger my-2'>
                     Subscription information failed to submit. Try again later

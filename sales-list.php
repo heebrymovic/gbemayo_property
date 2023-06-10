@@ -1,6 +1,4 @@
-﻿<?php 
-include("includes/header.php");
- ?>
+﻿<?php include("includes/header.php"); ?>
    
     <!-- Main Content -->
     <div class="body_area">
@@ -11,19 +9,13 @@ include("includes/header.php");
                     <div class="col-lg-6 col-md-12">
                         <ul class="breadcrumb pl-0 pb-0 ">
                             <li class="breadcrumb-item"><a href="dashboard">Home</a></li>
-                            <li class="breadcrumb-item active">Client Lists</li>
+                            <li class="breadcrumb-item active">Sales List</li>
                         </ul>
-                        <h1 class="mb-1 mt-1">Client Lists</h1>
+                        <h1 class="mb-1 mt-1">Sales List</h1>
                     </div>            
-                
-
-                    <div class="col-lg-6 col-md-12 text-md-right mt-3">
-                                <h6><b>Referral link</b></h6>
-                                 <input  type="text" style="display: none;" id="copyInput" value='<?php echo get_url("clients/register"). "?refid=" . $fetch_agent_info["agent_referral_id"] ?>'>
-
-                                <p><?php echo get_url("clients/register"). "?refid=" . $fetch_agent_info["agent_referral_id"] ?></p>
-                                <button class="btn btn-default" id="copyData">Copy Link</button>
-                            </div>
+                    <div class="col-lg-6 col-md-12 text-md-right">
+                        
+                    </div>
                 </div>
             </div>
         </div>
@@ -38,31 +30,34 @@ include("includes/header.php");
                                 <thead>
                                     <tr>
                                         <th># ID</th>
-                                        <th>Name</th>
-                                        <th>Phone Number</th>
-                                        <th>Email</th>
+                                        <th>Property Name</th>
+                                        <th>Property Price</th>
+                                        <th>Payment Type</th>
+                                        <th>Purchase Date</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
 
-                                        $query_all_clients = query_clients($session_logged_in_agent_id, $session_logged_in_business_id, NULL, true);
+                                        $query_all_purchase = agent_sold_property($session_logged_in_agent_id, $session_logged_in_business_id, true);
                                         $count = 1;
-                                        while($fetch_all_clients = mysqli_fetch_assoc($query_all_clients)){
+                                        while($fetch_all_purchase = mysqli_fetch_assoc($query_all_purchase)){
 
-                                            extract($fetch_all_clients);
+                                            extract($fetch_all_purchase);
+                                            $images = json_decode($property_file);
                                         ?>
-
                                             <tr>
                                                 <td><?php echo $count++;  ?></td>
-                                                <td><?php echo ucwords($clients_title . " ". $clients_fullname) ;   ?></td>
-                                                <td><?php echo $clients_phone_number;  ?></td>
-                                                <td><?php echo $clients_email;  ?></td>
+                                                
+                                                <td><img class="img-fluid rounded" style="max-width: 80px;" src="realestate/<?php echo $images[0] ?>" alt="property img"> <span class="ml-3"><?php echo $property_name;?></span></td>
+
+                                                <td>N<?php echo number_format($property_price);  ?></td>
+                                                <td><?php echo $installmental_property_duration ? "N". number_format($installmental_property_amount) . " For ".$installmental_property_duration : "Full Payment" ?></td>
+                                                <td><?php echo date('D, d M Y ' , strtotime($property_buy_created_on)); ?></td>
                                                 <td>  
-                                                    <a class="btn btn-success text-white btn-sm" href="client-details?client_id=<?php echo base64_encode($clients_id) ?>">View more</a>
+                                                    <a class="btn btn-success text-white btn-sm" href="purchase-details?purchase-id=<?php echo base64_encode($property_buy_id) ?>">View more</a>
                                                 </td>
-                                               
                                             </tr>
 
                                         <?php
@@ -78,3 +73,4 @@ include("includes/header.php");
             </div>
 
 <?php include("includes/footer.php") ?>
+

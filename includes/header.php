@@ -47,7 +47,7 @@
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
         <div class="loader">
-            <div class="mt-3"><img class="zmdi-hc-spin w60" src="assets/images/loader.svg" alt="Amaze"></div>
+            <div class="mt-3"><img class="zmdi-hc-spin w60" src="assets/images/loader.svg" alt="Gbemayo"></div>
             <p>Please wait...</p>        
         </div>
     </div>
@@ -62,7 +62,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="navbar-logo">
                             <a href="javascript:void(0);" class="bars"></a>
-                            <a class="navbar-brand" href="dashboard"><img src="assets/images/logo.svg" width="30" alt="Amaze"><span class="ml-2">Gbemayo</span></a>
+                            <a class="navbar-brand" href="dashboard"><img src="assets/images/logo.svg" width="30" alt="Gbemayo"><span class="ml-2">Gbemayo</span></a>
                         </div>
                         <div class="d-flex justify-content-end justify-content-md-between align-items-center flex-grow-1">
                             <div class="d-flex align-items-center currently_maintain hidden-xs">
@@ -71,18 +71,28 @@
                             <ul class="navbar">
             
                                 <li class="dropdown notifications">
-                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button"><i class="zmdi zmdi-notifications"></i><span class="label-count">5</span></a>
+                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button"><i class="zmdi zmdi-notifications"></i><span class="label-count">0</span></a>
                                     <ul class="dropdown-menu">
                                         <li class="header">New Message</li>
                                         <li class="body">
                                             <ul class="menu list-unstyled">
-                                                <li>
+                                                <!-- <li>
                                                     <a href="javascript:void(0);">
                                                         <div class="media">
                                                             <img class="media-object" src="<?php echo $fetch_agent_info['agent_profile_photo'] ?>" alt="">
                                                             <div class="media-body">
                                                                 <span class="name">Alexander <span class="time">13min ago</span></span>
                                                                 <span class="message">Meeting with Shawn at Stark Tower by 8 o'clock.</span>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </li> -->
+
+                                                <li>
+                                                    <a href="javascript:void(0);">
+                                                        <div class="media">
+                                                            <div class="media-body">
+                                                                <span class="name">No new messages.</span>
                                                             </div>
                                                         </div>
                                                     </a>
@@ -132,6 +142,8 @@
 
                             <li><a href="events" class="menu-toggle"><i class="zmdi zmdi-apps"></i><span>Events</span></a>
 
+                            <li><a href="sales-list" class="menu-toggle"><i class="zmdi zmdi-apps"></i><span>Sales List</span></a>
+
                             <?php
                                 if ($session_logged_in_privilege_id == 3) {
                             ?>
@@ -139,13 +151,18 @@
                                  <li><a href="agent-list" class="menu-toggle"><i class="zmdi zmdi-apps"></i><span>My Agents</span></a>
                                  </li>
 
+                                <?php
+                                    if ($fetch_agent_info['agent_subscription_status'] == "active") {
+                            
+                                ?>
                                  <li><a href="media" class="menu-toggle"><i class="zmdi zmdi-slideshow"></i><span>Media</span></a>
 
                             <?php
                                 }
+                                }
                             ?>
 
-                            <li><a href="" class="menu-toggle"><i class="zmdi zmdi-apps"></i><span>Investments</span></a>
+                            <!-- <li><a href="" class="menu-toggle"><i class="zmdi zmdi-apps"></i><span>Investments</span></a> -->
 
                             <li>
                                 <a href="transaction-list" class="menu-toggle"><i class="zmdi zmdi-shopping-basket"></i><span>Transactions</span></a>

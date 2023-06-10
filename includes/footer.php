@@ -4,7 +4,7 @@
                 <div class="col-md-12 col-lg-12">
                     <div class="card">
                         <div class="body">
-                            <p class="copyright mb-0">Copyright <?php echo date("Y") ?> © All Rights Reserved. <a href="https://thememakker.com/" target="_blank">Gbemayo Properties</a></p>
+                            <p class="copyright mb-0">Copyright <?php echo date("Y") ?> © All Rights Reserved. <a href="https://gbemayoproperties.com" target="_blank">Gbemayo Properties</a></p>
                         </div>
                     </div>
                 </div>

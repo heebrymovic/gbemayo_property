@@ -48,7 +48,7 @@
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
         <div class="loader">
-            <div class="mt-3"><img class="zmdi-hc-spin w60" src="../assets/images/loader.svg" alt="Amaze"></div>
+            <div class="mt-3"><img class="zmdi-hc-spin w60" src="../assets/images/loader.svg" alt="Gbemayo"></div>
             <p>Please wait...</p>        
         </div>
     </div>
@@ -63,7 +63,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="navbar-logo">
                             <a href="javascript:void(0);" class="bars"></a>
-                            <a class="navbar-brand" href="dashboard"><img src="../assets/images/logo.svg" width="30" alt="Amaze"><span class="ml-2">Amaze</span></a>
+                            <a class="navbar-brand" href="dashboard"><img src="../assets/images/logo.svg" width="30" alt="Gbemayo"><span class="ml-2">Gbemayo</span></a>
                         </div>
                         <div class="d-flex justify-content-end justify-content-md-between align-items-center flex-grow-1">
                             <div class="d-flex align-items-center currently_maintain hidden-xs">
@@ -77,7 +77,7 @@
                                     </div>
                                 </li> -->
                                 <li class="dropdown notifications">
-                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button"><i class="icon-bell"></i><span class="label-count">5</span></a>
+                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button"><i class="icon-bell"></i><span class="label-count">0</span></a>
                                     <ul class="dropdown-menu">
                                         <li class="header">New Message</li>
                                         <li class="body">
@@ -85,10 +85,8 @@
                                                 <li>
                                                     <a href="javascript:void(0);">
                                                         <div class="media">
-                                                            <img class="media-object" src="../assets/images/xs/avatar5.jpg" alt="">
                                                             <div class="media-body">
-                                                                <span class="name">Alexander <span class="time">13min ago</span></span>
-                                                                <span class="message">Meeting with Shawn at Stark Tower by 8 o'clock.</span>
+                                                                <span class="name">No New Messages</span>
                                                             </div>
                                                         </div>
                                                     </a>
@@ -190,10 +188,10 @@
                                 <a href="purchase-list" class="menu-toggle"><i class="zmdi zmdi-account-circle"></i><span>Purchases</span></a>
                             </li>
 
-                             <li>
+                             <!-- <li>
                                 <a href="events" class="menu-toggle"><i class="zmdi zmdi-account-circle"></i><span>Investments</span></a>
                             </li>
-
+ -->
                             <li>
                                 <a href="events" class="menu-toggle"><i class="zmdi zmdi-account-circle"></i><span>Events</span></a>
                             </li>
@@ -202,13 +200,24 @@
                                 <a href="media" class="menu-toggle"><i class="zmdi zmdi-account-circle"></i><span>Media</span></a>
                             </li>
 
-                            <li>
-                                <a href="media" class="menu-toggle"><i class="zmdi zmdi-account-circle"></i><span>Enquires</span></a>
-                            </li>
+                            <?php
 
+                              if ($session_logged_company_privilege_id == 2) {
+                            ?>
                             <li>
+                                <a href="#" class="menu-toggle"><i class="zmdi zmdi-account-circle"></i><span>Subscriptions</span></a>
+                            </li> 
+                            <?php
+
+                              }
+                            ?>
+                            <!-- <li>
+                                <a href="media" class="menu-toggle"><i class="zmdi zmdi-account-circle"></i><span>Enquires</span></a>
+                            </li> -->
+
+                           <!--  <li>
                                 <a href="noticeboard" class="menu-toggle"><i class="zmdi zmdi-account-circle"></i><span>NoticeBoard</span></a>
-                            </li>
+                            </li> -->
                         
                         
                         </ul>

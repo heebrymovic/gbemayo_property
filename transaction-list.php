@@ -17,9 +17,9 @@
                     </div>           
                 </div>
                 <?php
-                    if ($session_logged_in_privilege_id == 3 && $fetch_agent_info["agent_payment_status"] == "inactive") {
+                    if ($session_logged_in_privilege_id == 3 && $fetch_agent_info["agent_subscription_status"] == "inactive") {
                         include("realtor-subscribe-msg.php");
-                    }else if ($session_logged_in_privilege_id == 4 && $fetch_agent_info["agent_payment_status"] == "inactive"){
+                    }else if ($session_logged_in_privilege_id == 4 && $fetch_agent_info["agent_subscription_status"] == "inactive"){
                         include("marketers-subscribe-msg.php");
                     }
                 ?>

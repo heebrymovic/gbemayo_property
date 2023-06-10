@@ -68,7 +68,7 @@ include("includes/header.php");
                                             <p><?php echo $fetch_all_clients['property_buy_payment_structure'] ? "N".number_format($fetch_all_clients['installmental_property_amount'])." For " . $fetch_all_clients['installmental_property_duration']: "Full Payment" ?></p>
                                             <hr>
                                             <small class="text-muted">FullName: </small>
-                                            <p><?php echo ucwords($fetch_all_clients['clients_id'] . $fetch_all_clients['clients_title'] . ". " .$fetch_all_clients['clients_fullname']) ?></p>
+                                            <p><?php echo ucwords($fetch_all_clients['clients_title'] . ". " .$fetch_all_clients['clients_fullname']) ?></p>
                                             <hr>
                                             <small class="text-muted">Email address: </small>
                                             <p><?php echo $fetch_all_clients['clients_email'] ?></p>

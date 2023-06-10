@@ -1,7 +1,6 @@
 ﻿<?php
-    
     include("includes/plugins.php");
-
+ 
     if( isset($_POST['login'])){
 
         $output = "";

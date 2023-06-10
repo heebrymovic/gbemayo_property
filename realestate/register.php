@@ -49,6 +49,7 @@
                  $output = "<div class='alert alert-success'>
                   Registration Successful. Login to your dashboard
                 </div>";
+                header("refresh:3; url=login");
 
             }else{
                 $output = "<div class='alert alert-danger'>

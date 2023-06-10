@@ -18,10 +18,10 @@
         $event_desc  = mysqli_real_escape_string($con, $_POST['event_desc']);
         $event_date  = mysqli_real_escape_string($con, $_POST['event_date']);
         $event_venue  = mysqli_real_escape_string($con, $_POST['event_venue']);
+        $event_status  = mysqli_real_escape_string($con, $_POST['event_status']);
 
 
-
-        $add_event = update_events($event_title, $event_desc, $event_venue, $event_date);
+        $add_event = update_events($event_title, $event_desc, $event_venue, $event_date, $event_status);
 
         if ($add_event) {
             $output  =  "<div class='alert alert-success ml-3'>
@@ -103,6 +103,17 @@
                                 <div class="form-group">
                                     <div class="form-line">
                                         <input type="text" class="form-control" value="<?php echo $fetch_event_info['events_venue'] ?>" name="event_venue" placeholder="Event Venue">
+                                    </div>
+                                </div>   
+
+
+                                 <div class="form-group">
+                                    <div class="form-line">
+                                      <select name="event_status" class="form-control">
+                                          <option value="">Select Event Status</option>
+                                          <option <?php echo $fetch_event_info['events_status'] == 'active' ? "selected": ""   ?> value="active">Activate</option>
+                                          <option <?php echo $fetch_event_info['events_status'] == 'inactive' ? "selected": ""?> value="inactive">Deactivate</option>
+                                      </select>
                                     </div>
                                 </div>   
                         

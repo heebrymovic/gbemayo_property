@@ -55,11 +55,14 @@ include("includes/header.php");
                                         </div>
                                         <div class="body pt-1">
                                             <div>
-                                               <img src="../clients/<?php echo $fetch_all_clients['clients_photo'] ?>" alt="Clients Image" style="border:0; width: 100%; max-height: 250px; object-fit: cover;">
+                                               <img src="clients/<?php echo $fetch_all_clients['clients_photo'] ?>" alt="Clients Image" style="border:0; width: 100%; max-height: 250px; object-fit: cover;">
                                             </div>
                                             <hr>
                                             <small class="text-muted">Property Name: </small>
                                             <p><?php echo $fetch_all_clients['property_name'] ?></p>
+                                            <hr>
+                                            <small class="text-muted">Property Type: </small>
+                                            <p><?php echo $fetch_all_clients['property_type_name'] ?></p>
                                             <hr>
                                             <small class="text-muted">Asking Price: </small>
                                             <p>N<?php echo number_format($fetch_all_clients['property_price']); ?></p>
@@ -68,7 +71,7 @@ include("includes/header.php");
                                             <p><?php echo $fetch_all_clients['property_buy_payment_structure'] ? "N".number_format($fetch_all_clients['installmental_property_amount'])." For " . $fetch_all_clients['installmental_property_duration']: "Full Payment" ?></p>
                                             <hr>
                                             <small class="text-muted">FullName: </small>
-                                            <p><?php echo ucwords($fetch_all_clients['clients_id'] . $fetch_all_clients['clients_title'] . ". " .$fetch_all_clients['clients_fullname']) ?></p>
+                                            <p><?php echo ucwords($fetch_all_clients['clients_title'] . ". " .$fetch_all_clients['clients_fullname']) ?></p>
                                             <hr>
                                             <small class="text-muted">Email address: </small>
                                             <p><?php echo $fetch_all_clients['clients_email'] ?></p>

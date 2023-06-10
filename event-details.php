@@ -17,112 +17,6 @@ include("includes/header.php");
     }
 ?>
 
-
-    <!-- Right Sidebar -->
-  <!--   <aside id="rightsidebar" class="right-sidebar">
-        <div class="card">
-            <div class="header">
-                <h2>Layout Settings</h2>
-            </div>
-            <ul class="list-unstyled layout_setting">
-                <li>
-                    <label class="c_radio">
-                        <input name="menu_settings" type="radio" value="menu-h" checked="">
-                        <span class="checkmark"></span>
-                        <span class="ml-2">Horizontal Menu</span>
-                    </label>
-                </li>
-                <li>
-                    <label class="c_radio">
-                        <input name="menu_settings" type="radio" value="menu-l">
-                        <span class="checkmark"></span>
-                        <span class="ml-2">Vertical Leftbar</span>
-                    </label>
-                </li>
-                <li>
-                    <label class="c_radio">
-                        <input name="menu_settings" type="radio" value="menu-f">
-                        <span class="checkmark"></span>
-                        <span class="ml-2">Full witdh Layout</span>
-                    </label>
-                </li>
-            </ul>
-        </div>
-        <div class="card">
-            <div class="header">
-                <h2>Theme Settings</h2>
-            </div>
-            <ul class="list-unstyled choose-skin">
-                <li data-theme="purple"><div class="purple"></div></li>
-                <li data-theme="blue"><div class="blue"></div></li>
-                <li data-theme="cyan"><div class="cyan"></div></li>
-                <li data-theme="green" class="active"><div class="green"></div></li>
-                <li data-theme="orange"><div class="orange"></div></li>
-                <li data-theme="blush"><div class="blush"></div></li>
-            </ul>
-            <div class="bh_divider"></div>
-            <ul class="list-unstyled font_setting">
-                <li>
-                    <label class="c_radio">
-                        <input type="radio" name="font" value="font-quicksand">
-                        <span class="checkmark"></span>
-                        <span class="ml-2">Quicksand Google Font</span>
-                    </label>
-                </li>
-                <li>
-                    <label class="c_radio">
-                        <input type="radio" name="font" value="font-nunito">
-                        <span class="checkmark"></span>
-                        <span class="ml-2">Nunito Google Font</span>
-                    </label>
-                </li>
-                <li>
-                    <label class="c_radio">
-                        <input type="radio" name="font" value="font-ubuntu">
-                        <span class="checkmark"></span>
-                        <span class="ml-2">Ubuntu Google Font</span>
-                    </label>
-                </li>
-                <li>
-                    <label class="c_radio">
-                        <input type="radio" name="font" value="font-raleway" checked="">
-                        <span class="checkmark"></span>
-                        <span class="ml-2">Raleway Google Font</span>
-                    </label>
-                </li>
-            </ul>
-            <div class="bh_divider"></div>
-            <ul class="list-unstyled mb-0">
-                <li class="d-flex align-items-center mb-2">
-                    <label class="toggle-switch theme-switch">
-                        <input type="checkbox">
-                        <span class="toggle-switch-slider"></span>
-                    </label>
-                    <span class="ml-3">Enable Dark Mode!</span>
-                </li>
-                <li class="d-flex align-items-center mb-2">
-                    <label class="toggle-switch theme-high-contrast">
-                        <input type="checkbox">
-                        <span class="toggle-switch-slider"></span>
-                    </label>
-                    <span class="ml-3">Enable High Contrast</span>
-                </li>
-                <li class="d-flex align-items-center mb-2">
-                    <label class="toggle-switch theme-rtl">
-                        <input type="checkbox">
-                        <span class="toggle-switch-slider"></span>
-                    </label>
-                    <span class="ml-3">Enable RTL Mode!</span>
-                </li>
-            </ul>
-        </div>
-        <div class="card">
-            <a href="javascript:void(0);" target="_blank" class="btn btn-block btn-primary">Buy this item</a>
-            <a href="https://themeforest.net/user/thememakker/portfolio" target="_blank" class="btn btn-block btn-secondary">Themeforest Portfolio</a>
-            <a href="https://thememakker.com/" target="_blank" class="btn btn-block btn-default">Visit ThemeMakker</a>
-        </div>
-    </aside> -->
-
     <!-- Main Content -->
     <div class="body_area profile-page">
 
@@ -140,16 +34,7 @@ include("includes/header.php");
 
 
                 </div>
-         
-                <!-- <div class="row clearfix">
-                    <div class="col-12">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#overview">Overview</a></li>
-                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#schedule">Schedule</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#usersettings">Settings</a></li>
-                        </ul>
-                    </div>
-                </div> -->
+        
             </div>
         </div>
 
@@ -170,9 +55,13 @@ include("includes/header.php");
 
                                         <div class="body">
                                              <div class="d-flex flex-column mb-4">
-                                               <input  type="text" style="display: none;" id="copyInput" value='<?php echo get_url("/CD/gbemayo/event")."?refid=$agent_event_id&event_id=". base64_encode($event_id) ?>'>
+                                               <input  type="text" style="display: none;" id="copyInput" value='<?php echo get_url("event")."?refid=$agent_event_id&event_id=". base64_encode($event_id) ?>'>
                                                <button id="copyData" class="btn btn-primary" >Copy Invite Link</button>
                                             </div>
+                                            <div>
+                                               <img onclick="openFullscreen(this)" src="realestate/<?php echo $fetch_event_info['events_banner'] ?>" alt="Events Banner Image" style="border:0; width: 100%; max-height: 350px; cursor: pointer;">
+                                            </div>
+                                            <hr>
                                             <small class="text-muted">Event Title: </small>
                                             <p><?php echo $fetch_event_info['events_title'] ?></p>
                                             <hr>
@@ -198,7 +87,7 @@ include("includes/header.php");
                                 <div class="col-lg-8 col-md-12">
                                     
                         <div class="card p-3" >
-                            <h5>Lists Of invitee</h5>
+                            <h5>Lists Of clients invitee</h5>
                         <div class="table-responsive">
                             <table class="table table-borderless table-hover mb-0 js-basic-example dataTable" id="datatables">
                                 <thead>
@@ -234,6 +123,47 @@ include("includes/header.php");
                             </table>
                         </div>
                     </div>
+
+
+                             <div class="card p-3" >
+                            <h5>Lists Of normal users invitee</h5>
+                        <div class="table-responsive">
+                            <table class="table table-borderless table-hover mb-0 js-basic-example dataTable" id="datatables1">
+                                <thead>
+                                    <tr>
+                                        <th># ID</th>
+                                        <th>FullName</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
+                                        <th>Registration Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+
+                                        $query_all__invitee = agent_normal_event_invitee($session_logged_in_agent_id, $session_logged_in_business_id, $event_id,true);
+                                        $count = 1;
+                                        while($fetch_all_invitee = mysqli_fetch_assoc($query_all__invitee)){
+
+                                            extract($fetch_all_invitee);
+                                        ?>
+                                            <tr>
+                                                <td><?php echo $count++;  ?></td>
+                                                <td><?php echo ucwords($normal_event_reg_fullname) ?></td>
+                                                <td><?php echo $normal_event_reg_email ?></td>
+                                                <td><?php echo $normal_event_reg_phone_no ?></td>
+                                                <td><?php echo date("D, d M Y", strtotime($normal_event_created_on)); ?></td>
+                                            </tr>
+
+                                        <?php
+
+                                            }
+
+                                        ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                                   
                                 </div>
                             </div>
@@ -250,32 +180,6 @@ include("includes/header.php");
 
 </div>
 
-<script>
-  
-
-    copyData.addEventListener("click", copyToClipBoard);
-    
-    function copyToClipBoard(e) {
-
-        var defaults = this.innerHTML;
-
-        let copyInput = document.querySelector("#copyInput");
-
-        console.log( copyInput)
-
-        copyInput.style.display = 'block'
-        
-        copyInput.select();
-
-         document.execCommand('copy');
-
-         this.innerHTML = "Copied"
-
-         copyInput.style.display = 'none'
-
-         setTimeout(() => this.innerHTML = defaults, 1000)
-    }
-</script>
 <!-- Jquery Core Js --> 
 <script src="assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js ( jquery.v3.2.1, Bootstrap4 js) --> 
 <script src="assets/bundles/vendorscripts.bundle.js"></script> <!-- slimscroll, waves Scripts Plugin Js -->
@@ -288,8 +192,49 @@ include("includes/header.php");
 
 <script>
         
+     var click = 0;
+
+    copyData?.addEventListener("click", copyToClipBoard);
+    
+    function copyToClipBoard(e) {
+
+        var defaults = this.innerHTML;
+
+        if (click == 1 ) return
+
+        click++;
+
+        let copyInput = document.querySelector("#copyInput");
+
+        copyInput.style.display = 'block'
+        
+        copyInput.select();
+
+         document.execCommand('copy');
+
+         this.innerHTML = "Copied"
+
+         copyInput.style.display = 'none'
+
+         setTimeout(() => {
+            this.innerHTML = defaults;
+            click = 0;
+         }, 1000)
+    }
+
+    function openFullscreen(elem) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+      }
+    }
+
     $(document).ready(function() {
             $('#datatables').DataTable({});
+            $('#datatables1').DataTable({});
 
     });
 </script>

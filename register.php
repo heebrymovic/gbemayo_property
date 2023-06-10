@@ -80,7 +80,7 @@
                 }
 
 
-                if ( ($agent_privilege_id == 3 && !@$fetch_referral) ||  ($agent_privilege_id == 3 && @$fetch_referral && $fetch_referral['subcription'] == 'active') ) {
+                if ( ($agent_privilege_id == 3 && !@$fetch_referral) ||  ($agent_privilege_id == 3 && @$fetch_referral && $fetch_referral['subscription'] == 'active') ) {
                     
                     $_SESSION['store']['agent_privilege_id'] = $agent_privilege_id;
                     $_SESSION['store']['fullname'] = $fullname;
@@ -101,7 +101,7 @@
                     window.location.href='confirm-pay'
                     </script>";
                     exit();
-                } else if (@$fetch_referral && $fetch_referral['subcription'] == 'inactive' ) {
+                } else if (@$fetch_referral && $fetch_referral['subscription'] == 'inactive' ) {
                     
                     $output = "<div class='alert alert-danger'>
                                   This account can't recruit at the moment. Try again later
@@ -119,6 +119,7 @@
                                 $output = "<div class='alert alert-success'>
                                           Registration Successful. Login to your dashboard
                                         </div>";
+                                         header("refresh:3; url=login");
                             }else{
                                  $output = "<div class='alert alert-danger'>
                                           Registration Failed. Try again later
